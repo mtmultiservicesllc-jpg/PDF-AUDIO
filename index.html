@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -7,7 +7,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="GRC Drive">
     <meta name="theme-color" content="#0b0f19">
-    <title>GRC Drive Audio — Révision Vocale iPhone & Voiture</title>
+    <title>GRC Drive Audio — Hands-Free English Voice Reader</title>
 
     <!-- PDF.JS VIA JSDELIVR -->
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -64,20 +64,6 @@
             margin-top: 2px;
         }
 
-        .ios-tip-banner {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid var(--accent-orange);
-            border-radius: 12px;
-            padding: 10px 14px;
-            font-size: 0.82rem;
-            line-height: 1.4;
-            color: #fde68a;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 4px;
-        }
-
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -85,6 +71,47 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
+        }
+
+        /* SELECTEUR DE LANGUE */
+        .lang-banner {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lang-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #93c5fd;
+        }
+
+        .lang-toggle-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            background: #0f172a;
+            color: var(--text-sub);
+            border: 1px solid #334155;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-btn.active {
+            background: var(--accent-blue);
+            color: white;
+            border-color: #60a5fa;
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
         }
 
         .player-card {
@@ -216,23 +243,6 @@
             gap: 8px;
         }
 
-        .btn-test-sound {
-            background: #334155;
-            color: #38bdf8;
-            border: 1px solid #0284c7;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
         .upload-label {
             display: flex;
             flex-direction: column;
@@ -353,27 +363,30 @@
 
     <header>
         <h1>🚗 GRC Drive Audio Player</h1>
-        <p>Révision mains-libres • Optimisé iPhone, CarPlay & Bluetooth</p>
+        <p>Hands-Free Audio Study App • Optimized for iPhone, CarPlay & Bluetooth</p>
     </header>
 
     <div class="container">
 
-        <div class="ios-tip-banner">
-            <span style="font-size: 1.4rem;">⚠️</span>
-            <div>
-                <strong>Astuce iPhone :</strong> Vérifie que le <strong>bouton silencieux</strong> sur la tranche gauche de ton iPhone n'est pas sur orange, et <strong>monte le volume</strong> avec les boutons physiques !
+        <!-- BOUTONS SELECTION LANGUE -->
+        <div class="lang-banner">
+            <span class="lang-label">🗣️ Voice Language:</span>
+            <div class="lang-toggle-group">
+                <button class="lang-btn active" id="btnLangEn">🇺🇸 English (US)</button>
+                <button class="lang-btn" id="btnLangFr">🇫🇷 French</button>
             </div>
         </div>
         
+        <!-- CARTE DE CONDUITE -->
         <div class="player-card">
-            <div class="now-playing-label" id="trackCategory">MODULE SÉLECTIONNÉ</div>
-            <div class="track-title" id="trackTitle">1. Random Bit — Entretien Medicaid & CMS</div>
-            <div class="track-status" id="trackStatus">Prêt • Appuie sur le gros bouton ▶ PLAY</div>
+            <div class="now-playing-label" id="trackCategory">SELECTED MODULE (ENGLISH US VOICE)</div>
+            <div class="track-title" id="trackTitle">1. Random Bit — Medicaid & CMS Interview Prep</div>
+            <div class="track-status" id="trackStatus">Ready • Tap ▶ PLAY to listen in English</div>
 
             <div class="controls-row">
-                <button class="btn-circle btn-skip" id="btnPrev" title="Reculer 15s">⏮ 15s</button>
-                <button class="btn-circle btn-play-big pulse-play" id="btnPlay" title="Lecture / Pause">▶</button>
-                <button class="btn-circle btn-skip" id="btnNext" title="Avancer 15s">15s ⏭</button>
+                <button class="btn-circle btn-skip" id="btnPrev" title="Back 15s">⏮ 15s</button>
+                <button class="btn-circle btn-play-big pulse-play" id="btnPlay" title="Play / Pause">▶</button>
+                <button class="btn-circle btn-skip" id="btnNext" title="Forward 15s">15s ⏭</button>
             </div>
 
             <div class="sub-controls">
@@ -382,74 +395,73 @@
                 <button class="pill-btn" id="spd15">1.5x</button>
                 <button class="pill-btn" id="btnStop">⏹ Stop</button>
             </div>
-
-            <button class="btn-test-sound" id="btnTestSound">🔊 Tester le son de mon iPhone (Bip sonore)</button>
         </div>
 
+        <!-- UPLOAD PDF -->
         <div class="card">
-            <h2>📂 Lire un PDF depuis ton iPhone</h2>
+            <h2>📂 Read Any English PDF From Your iPhone</h2>
             
             <label for="pdfInput" class="upload-label" id="uploadLabel">
                 <span style="font-size: 2.2rem;">📄</span>
-                <strong>Appuie ici pour choisir un PDF</strong>
-                <p>Ouvre tes fichiers iPhone, iCloud Drive ou Google Drive</p>
+                <strong>Tap here to choose your PDF</strong>
+                <p>Opens your iPhone Files, iCloud Drive, or Downloads</p>
             </label>
             <input type="file" id="pdfInput" accept="application/pdf, text/plain">
 
             <div style="margin-top: 14px;">
-                <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 4px;">Ou colle directement du texte :</p>
-                <textarea class="paste-box" id="pasteInput" placeholder="Colle ici un texte ou des questions d'entretien..."></textarea>
-                <button class="btn-load-text" id="btnLoadPaste">▶ Charger et Écouter ce texte</button>
+                <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 4px;">Or paste English text directly:</p>
+                <textarea class="paste-box" id="pasteInput" placeholder="Paste any English interview questions, job requirements, or notes here..."></textarea>
+                <button class="btn-load-text" id="btnLoadPaste">▶ Load & Read Aloud in English</button>
             </div>
         </div>
 
+        <!-- MODULES EN ANGLAIS PUR -->
         <div class="card">
-            <h2>🎧 Modules de Révision Intégrés (1 Clic)</h2>
+            <h2>🎧 Pre-Loaded GRC Study Modules</h2>
             <div class="playlist" id="playlistContainer">
                 <div class="playlist-item active" onclick="loadModule(0)">
                     <div>
-                        <div class="playlist-title">1. Random Bit — Entretien Medicaid & CMS ARC-AMPE</div>
-                        <div class="playlist-desc">Crosswalks, traçabilité et preuves objectives (4 questions)</div>
+                        <div class="playlist-title">1. Random Bit — Medicaid GRC Mock Interview</div>
+                        <div class="playlist-desc">CMS ARC-AMPE, HITRUST r2, and objective evidence (4 Questions)</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(1)">
                     <div>
-                        <div class="playlist-title">2. Maestro Search — Scoping, SOW & CMMC 2.0</div>
-                        <div class="playlist-desc">Cadrage client, LOE et tests d'intrusion ($60-$90/hr)</div>
+                        <div class="playlist-title">2. Maestro Search — Pre-Sales Scoping & CMMC 2.0</div>
+                        <div class="playlist-desc">SOW authoring, penetration test scoping & LOE ($60-$90/hr)</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(2)">
                     <div>
                         <div class="playlist-title">3. Brooksource — NIST SP 800-171 & TSA 23-01</div>
-                        <div class="playlist-desc">Plans de sécurité (SSPs), CAPs et conformité transport</div>
+                        <div class="playlist-desc">System Security Plans (SSPs), CAPs & Aviation Compliance ($45/hr)</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(3)">
                     <div>
                         <div class="playlist-title">4. RemoteHunter — Fintech, GLBA & SOC 2 Type II</div>
-                        <div class="playlist-desc">Réglementation bancaire, FFIEC et gouvernance IA</div>
+                        <div class="playlist-desc">Banking regulations, FFIEC guidelines & AI Governance ($72K-$90K)</div>
                     </div>
                     <span>▶</span>
                 </div>
             </div>
         </div>
 
+        <!-- ZONE TEXTE -->
         <div class="card">
-            <h2>📖 Texte en cours de lecture</h2>
+            <h2>📖 Current Reading Text</h2>
             <div class="reader-box" id="readerText">
-                Sélectionne un module ou charge un fichier PDF pour commencer.
+                Select a module above or upload an English PDF to begin listening.
             </div>
         </div>
 
     </div>
 
-    <audio id="nativeAudio" src="episode1.m4a" preload="none"></audio>
-
     <footer>
-        Conçu pour Moussa Toure • Déployé sur GitHub Pages / Vercel • Compatible CarPlay
+        Designed for Moussa Toure • Deployed on GitHub Pages / Vercel • 100% CarPlay & Bluetooth Compatible
     </footer>
 
     <script>
@@ -459,12 +471,12 @@
 
         const modules = [
             {
-                title: "Random Bit — Entretien Medicaid & CMS",
+                title: "Random Bit — Medicaid GRC Mock Interview",
                 category: "MEDICAID GRC MOCK INTERVIEW",
-                text: `Session de révision pour le poste Governance and Compliance Consultant chez Random Bit.
+                text: `Welcome Moussa to your Medicaid Governance and Compliance review session for Random Bit.
 
 Question 1: How would you approach designing a control crosswalk mapping CMS ARC-AMPE and HITRUST r2 requirements with NIST CSF to ensure traceability?
-Answer: I use a five-phase methodology focused on bidirectional traceability and the test once, satisfy many principle. First, establish NIST SP 800-53 Revision 5 as the underlying technical pivot, and NIST CSF 2.0 as the organizational taxonomy. Second, define multi-dimensional traceability attributes including regulatory citations, internal control narratives, SOP references, technical control owners, and objective evidence artifacts. Third, apply the highest common denominator principle: designing controls to meet the strictest requirement among CMS and HITRUST to eliminate duplicate testing. Fourth, ensure bidirectional traceability from high-level mandates down to raw evidence, and from audit findings back to regulatory clauses to prioritize CAPs. Fifth, operationalize in a centralized GRC repository with dynamic change triggers.
+Answer: I use a five-phase methodology focused on bidirectional traceability and the test once, satisfy many principle. First, establish NIST SP 800-53 Revision 5 as the underlying technical pivot, and NIST CSF 2.0 as the organizational taxonomy. Second, define multi-dimensional traceability attributes including regulatory citations, internal control narratives, SOP references, technical control owners, and objective evidence artifacts. Third, apply the highest common denominator principle: designing controls to meet the strictest requirement among CMS and HITRUST to eliminate duplicate testing. Fourth, ensure bidirectional traceability from high-level mandates down to raw evidence, and from audit findings back to regulatory clauses to prioritize Corrective Action Plans. Fifth, operationalize in a centralized GRC repository with dynamic change triggers.
 
 Question 2: How would you ensure objective evidence artifacts remain current and aligned with evolving CMS, HITRUST, and NIST expectations?
 Answer: I implement a Continuous Evidence Governance Lifecycle based on five pillars: One: Enforce the four-pillar evidence quality gate: Relevance, Completeness, Accuracy, and Currency with strict metadata tagging. Two: Implement cadence-based schedules, automating technical exports continuously, and using an Evidence Calendar with 30-day lookaheads for periodic administrative reviews. Three: Conduct regulatory horizon scanning and delta impact analyses when frameworks evolve. Four: Integrate with the Change Advisory Board so major architectural changes trigger an automatic evidence refresh. Five: Execute quarterly pre-audit surveillance reviews on a rotating 10 to 15 percent sample to catch and remediate staleness early.
@@ -477,36 +489,33 @@ Answer: I execute a closed-loop Lessons Learned Protocol: First, conduct a blame
             },
             {
                 title: "Maestro Search — Scoping & CMMC 2.0",
-                category: "AVANT-VENTE & GRC ($60-$90/HR)",
-                text: `Session de révision Maestro Search.
-Rôle: Information Security Consultant pour le cadrage d'avant-vente et GRC.
-Compétences clés:
-Rédaction de Scope of Work (SOW): Transformer les exigences client, les contraintes réglementaires et les critères de cyber-assurance en cahiers des charges précis avec estimation du niveau d'effort (LOE).
-CMMC 2.0 Level 2 et NIST SP 800-171: Définir les périmètres d'évaluation pour les sous-traitants de la défense manipulant des informations non classifiées contrôlées (CUI), calculer les scores SPRS et planifier les plans d'action et jalons (POA&M).
-Cadrage des tests d'intrusion: Définir les plages d'adresses IP cibles, les points de terminaison d'API, la complexité des applications web et les règles d'engagement pour calibrer le temps d'intervention des testeurs offensifs.
-Passation aux équipes techniques: Assurer la remise d'inventaires d'actifs clairs et d'attentes probatoires complètes pour éliminer toute friction de livraison.`
+                category: "PRE-SALES & GRC CONSULTING ($60-$90/HR)",
+                text: `Review session for Maestro Search Information Security Consultant position.
+Key consulting competencies:
+Scope of Work Authoring: Translating client technical infrastructure, regulatory compliance mandates, and cyber insurance requirements into well-defined Scopes of Work with realistic Level of Effort estimations.
+CMMC 2.0 Level 2 and NIST SP 800-171: Scoping assessment boundaries for defense subcontractors handling Controlled Unclassified Information, calculating DoD SPRS scores, and building System Security Plans and POA and M milestones.
+Penetration Testing Calibration: Defining target IP ranges, web application complexity, API endpoints, and testing rules of engagement to estimate consultant hours accurately.
+Consultant Handovers: Providing delivery teams and penetration testers with complete asset inventories and evidentiary expectations to eliminate delivery friction.`
             },
             {
                 title: "Brooksource — NIST SP 800-171 & TSA 23-01",
                 category: "AVIATION FORTUNE 500 ($45/HR)",
-                text: `Session de révision Brooksource Fortune 500 à Atlanta.
-Poste: Information Security Compliance Analyst.
-Points essentiels:
-NIST SP 800-171 et Plans de Sécurité Système (SSP): Documentation des limites système, des flux de données et des architectures réseau sur les 110 exigences de sécurité.
-TSA Joint Emergency Amendment 23-01: Directives de cybersécurité aéroportuaires et transport, validation de la segmentation réseau entre réseaux opérationnels et corporate IT.
-Plans d'Actions Correctives (CAPs): Suivi des déficiences d'audit, coordination avec les propriétaires de contrôles et clôture des remédiations.
-Audits et tests de contrôles: Vérification de la conception (Test of Design) et de l'efficacité opérationnelle (Test of Operating Effectiveness) sur les journaux d'accès privilégiés et les configurations MFA.`
+                text: `Review session for Brooksource Fortune 500 Information Security Compliance Analyst role in Atlanta.
+Core audit and compliance focus:
+NIST SP 800-171 and System Security Plans: Authoring and updating comprehensive SSP documentation, system boundaries, and network architectures across all 110 requirements.
+TSA Joint Emergency Amendment 23-01: Assessing aviation and critical transportation infrastructure controls, verifying network segmentation between operational and corporate networks.
+Corrective Action Plans: Tracking audit findings, deficiency remediations, and milestones through verified closure.
+IT Audits and Control Testing: Performing testing of design and testing of operating effectiveness across privileged access logs, multi-factor authentication, and firewall rule configurations.`
             },
             {
                 title: "RemoteHunter — Fintech & SOC 2 Type II",
-                category: "BANQUE DIGITALE ($72K-$90K)",
-                text: `Session de révision RemoteHunter pour plateforme bancaire.
-Poste: Compliance Specialist pour banques et coopératives de crédit américaines.
-Points essentiels:
-Réglementations bancaires: GLBA Safeguards Rule, directives FFIEC pour l'examen IT, et conformité PCI DSS 4.0.
-Préparation aux audits SOC 2 Type II: Collecte et vérification des preuves sur les critères de sécurité, disponibilité et confidentialité.
-Gouvernance de l'IA: Évaluation de modèles automatisés d'octroi et d'onboarding client sous le NIST AI RMF et prévention des biais algorithmiques.
-Formation juridique: Exploitation des études de droit pour interpréter les bulletins réglementaires du CFPB et de la FTC et maintenir les registres de conformité.`
+                category: "DIGITAL BANKING PLATFORM ($72K-$90K)",
+                text: `Review session for RemoteHunter Compliance Specialist role supporting a leading digital banking platform for U.S. banks and credit unions.
+Core responsibilities:
+Financial Regulations: Operationalizing GLBA Safeguards Rule, FFIEC IT Examination Handbook guidelines, and PCI DSS 4.0 requirements.
+SOC 2 Type II Audit Readiness: Gathering, indexing, and validating evidence across Security, Availability, and Confidentiality Trust Services Criteria.
+AI Governance: Evaluating automated customer onboarding and decisioning tools against the NIST AI Risk Management Framework, mitigating algorithmic bias.
+Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC regulatory updates and maintain defensible compliance repositories.`
             }
         ];
 
@@ -516,12 +525,14 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         let sentenceIndex = 0;
         let playbackRate = 1.0;
         let voices = [];
+        let currentLang = "en-US"; // DEFAUT ANGLAIS US STRICT
 
         const btnPlay = document.getElementById('btnPlay');
         const btnPrev = document.getElementById('btnPrev');
         const btnNext = document.getElementById('btnNext');
         const btnStop = document.getElementById('btnStop');
-        const btnTestSound = document.getElementById('btnTestSound');
+        const btnLangEn = document.getElementById('btnLangEn');
+        const btnLangFr = document.getElementById('btnLangFr');
         const trackTitle = document.getElementById('trackTitle');
         const trackCategory = document.getElementById('trackCategory');
         const trackStatus = document.getElementById('trackStatus');
@@ -529,7 +540,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         const pdfInput = document.getElementById('pdfInput');
         const pasteInput = document.getElementById('pasteInput');
         const btnLoadPaste = document.getElementById('btnLoadPaste');
-        const nativeAudio = document.getElementById('nativeAudio');
 
         function populateVoices() {
             if (synth) {
@@ -559,26 +569,23 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             }
         }
 
-        btnTestSound.addEventListener('click', () => {
-            unlockIOSAudio();
-            try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (AudioCtx) {
-                    const ctx = new AudioCtx();
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.type = "sine";
-                    osc.frequency.setValueAtTime(660, ctx.currentTime);
-                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.4);
-                    trackStatus.innerText = "🔊 Bip sonore joué ! Si tu l'as entendu, ton son est actif !";
-                }
-            } catch (e) {
-                alert("Erreur test sonore: " + e.message);
+        btnLangEn.addEventListener('click', () => {
+            currentLang = "en-US";
+            btnLangEn.classList.add('active');
+            btnLangFr.classList.remove('active');
+            trackCategory.innerText = "ENGLISH (US) VOICE ACTIVE";
+            if (isSpeaking) {
+                speakCurrentSentence();
+            }
+        });
+
+        btnLangFr.addEventListener('click', () => {
+            currentLang = "fr-FR";
+            btnLangFr.classList.add('active');
+            btnLangEn.classList.remove('active');
+            trackCategory.innerText = "VOIX FRANÇAISE ACTIVE";
+            if (isSpeaking) {
+                speakCurrentSentence();
             }
         });
 
@@ -586,9 +593,9 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             stopAudio();
             const mod = modules[idx];
             trackTitle.innerText = mod.title;
-            trackCategory.innerText = mod.category;
+            trackCategory.innerText = mod.category + " (ENGLISH US VOICE)";
             readerText.innerText = mod.text;
-            trackStatus.innerText = "Module chargé • Appuie sur ▶ PLAY";
+            trackStatus.innerText = "Module loaded • Tap ▶ PLAY to listen in English";
             btnPlay.classList.add('pulse-play');
 
             document.querySelectorAll('.playlist-item').forEach((el, i) => {
@@ -607,7 +614,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
 
         function speakCurrentSentence() {
             if (!synth) {
-                alert("La synthèse vocale n'est pas supportée sur ce navigateur.");
+                alert("Speech synthesis is not supported on this browser.");
                 return;
             }
 
@@ -615,7 +622,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
                 isSpeaking = false;
                 btnPlay.innerText = "▶";
                 btnPlay.classList.remove('pulse-play');
-                trackStatus.innerText = "✅ Session terminée ! Appuie sur Play pour réécouter";
+                trackStatus.innerText = "✅ Session finished! Tap Play to replay";
                 sentenceIndex = 0;
                 return;
             }
@@ -629,22 +636,25 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             utter.pitch = 1.0;
 
             populateVoices();
-            const isEnglish = /[a-zA-Z]{4,}/.test(text) && (text.includes("Question") || text.includes("Answer") || text.includes("the") || text.includes("framework") || text.includes("audit"));
-            if (isEnglish) {
+
+            // FORCE ANGLAIS US NATUREL
+            if (currentLang === "en-US") {
                 utter.lang = "en-US";
-                const enV = voices.find(v => v.lang && v.lang.startsWith("en"));
-                if (enV) utter.voice = enV;
+                const enVoice = voices.find(v => v.lang === "en-US" && (v.name.includes("Samantha") || v.name.includes("Ava") || v.name.includes("Alex") || v.name.includes("Siri") || v.name.includes("Allison"))) ||
+                                voices.find(v => v.lang === "en-US") ||
+                                voices.find(v => v.lang && v.lang.startsWith("en"));
+                if (enVoice) utter.voice = enVoice;
             } else {
                 utter.lang = "fr-FR";
-                const frV = voices.find(v => v.lang && v.lang.startsWith("fr"));
-                if (frV) utter.voice = frV;
+                const frVoice = voices.find(v => v.lang === "fr-FR" || v.lang.startsWith("fr"));
+                if (frVoice) utter.voice = frVoice;
             }
 
             utter.onstart = () => {
                 isSpeaking = true;
                 btnPlay.innerText = "⏸";
                 btnPlay.classList.remove('pulse-play');
-                trackStatus.innerText = `Lecture en cours (${sentenceIndex + 1}/${sentences.length})... 🚗🔊`;
+                trackStatus.innerText = `Reading in English (${sentenceIndex + 1}/${sentences.length})... 🚗🔊`;
             };
 
             utter.onend = () => {
@@ -673,7 +683,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
                 isSpeaking = false;
                 synth.cancel();
                 btnPlay.innerText = "▶";
-                trackStatus.innerText = "En pause ⏸ (Appuie sur Play pour reprendre)";
+                trackStatus.innerText = "Paused ⏸ (Tap Play to resume)";
             } else {
                 isSpeaking = true;
                 speakCurrentSentence();
@@ -684,7 +694,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             isSpeaking = false;
             synth.cancel();
             btnPlay.innerText = "▶";
-            trackStatus.innerText = "Arrêté ⏹";
+            trackStatus.innerText = "Stopped ⏹";
         }
 
         btnPlay.addEventListener('click', togglePlay);
@@ -696,7 +706,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             if (isSpeaking) {
                 speakCurrentSentence();
             } else {
-                trackStatus.innerText = `Reculé à la phrase ${sentenceIndex + 1}`;
+                trackStatus.innerText = `Rewound to sentence ${sentenceIndex + 1}`;
             }
         });
 
@@ -706,7 +716,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             if (isSpeaking) {
                 speakCurrentSentence();
             } else {
-                trackStatus.innerText = `Avancé à la phrase ${sentenceIndex + 1}`;
+                trackStatus.innerText = `Advanced to sentence ${sentenceIndex + 1}`;
             }
         });
 
@@ -733,9 +743,9 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
 
             unlockIOSAudio();
             stopAudio();
-            trackCategory.innerText = "DOCUMENT PERSONNEL DÉTECTÉ";
+            trackCategory.innerText = "CUSTOM ENGLISH PDF (ENGLISH US VOICE)";
             trackTitle.innerText = file.name;
-            trackStatus.innerText = "⏳ Extraction du texte en cours...";
+            trackStatus.innerText = "⏳ Extracting text from PDF...";
 
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
@@ -754,21 +764,21 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
                             }
 
                             if (!extractedText.trim()) {
-                                throw new Error("Le PDF ne contient pas de texte lisible.");
+                                throw new Error("PDF does not contain readable text.");
                             }
 
                             readerText.innerText = extractedText.trim();
                             prepareText(extractedText);
-                            trackStatus.innerText = `✅ PDF extrait (${pdf.numPages} pages) ! Appuie sur ▶ PLAY`;
+                            trackStatus.innerText = `✅ PDF extracted (${pdf.numPages} pages)! Tap ▶ PLAY to listen in English`;
                             btnPlay.classList.add('pulse-play');
                         } catch (err) {
-                            alert("Erreur extraction PDF: " + err.message);
-                            trackStatus.innerText = "❌ Erreur extraction. Utilise l'option copier-coller ci-dessous.";
+                            alert("PDF extraction error: " + err.message);
+                            trackStatus.innerText = "❌ Extraction error. Please use the paste box below.";
                         }
                     };
                     reader.readAsArrayBuffer(file);
                 } catch (err) {
-                    alert("Impossible d'ouvrir le fichier: " + err.message);
+                    alert("Could not open file: " + err.message);
                 }
             } else {
                 const reader = new FileReader();
@@ -776,7 +786,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
                     const text = this.result;
                     readerText.innerText = text.trim();
                     prepareText(text);
-                    trackStatus.innerText = `✅ Fichier texte chargé ! Appuie sur ▶ PLAY`;
+                    trackStatus.innerText = `✅ Text file loaded! Tap ▶ PLAY to listen in English`;
                     btnPlay.classList.add('pulse-play');
                 };
                 reader.readAsText(file);
@@ -787,15 +797,15 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             unlockIOSAudio();
             const val = pasteInput.value.trim();
             if (!val) {
-                alert("Colle d'abord du texte dans la boîte !");
+                alert("Please paste some text into the box first!");
                 return;
             }
             stopAudio();
-            trackCategory.innerText = "TEXTE COLLÉ";
-            trackTitle.innerText = "Révision Personnalisée";
+            trackCategory.innerText = "PASTED ENGLISH TEXT";
+            trackTitle.innerText = "Custom Review";
             readerText.innerText = val;
             prepareText(val);
-            trackStatus.innerText = `✅ Texte chargé (${sentences.length} phrases) ! Lecture...`;
+            trackStatus.innerText = `✅ Text loaded (${sentences.length} sentences)! Reading in English...`;
             isSpeaking = true;
             speakCurrentSentence();
         });
