@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#0b0f19">
     <title>GRC Drive Audio — Révision Vocale iPhone & Voiture</title>
 
-    <!-- PDF.JS VIA JSDELIVR (OPTIMISÉ POUR SAFARI IOS) -->
+    <!-- PDF.JS VIA JSDELIVR -->
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 
     <style>
@@ -19,6 +19,7 @@
             --accent-blue: #2563eb;
             --accent-cyan: #06b6d4;
             --accent-green: #10b981;
+            --accent-orange: #f59e0b;
             --text-main: #f8fafc;
             --text-sub: #94a3b8;
             --border-color: #1e293b;
@@ -44,9 +45,9 @@
 
         header {
             text-align: center;
-            padding: 10px 0 14px;
+            padding: 10px 0 12px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         header h1 {
@@ -63,6 +64,20 @@
             margin-top: 2px;
         }
 
+        .ios-tip-banner {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--accent-orange);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 0.82rem;
+            line-height: 1.4;
+            color: #fde68a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -72,7 +87,6 @@
             gap: 14px;
         }
 
-        /* CARTE LECTEUR VOITURE */
         .player-card {
             background-color: var(--card-bg);
             border: 2px solid #1e3a8a;
@@ -109,7 +123,6 @@
             min-height: 20px;
         }
 
-        /* GROS BOUTONS POUR LA CONDUITE */
         .controls-row {
             display: flex;
             align-items: center;
@@ -203,7 +216,23 @@
             gap: 8px;
         }
 
-        /* BOUTON D'UPLOAD NATIF IOS */
+        .btn-test-sound {
+            background: #334155;
+            color: #38bdf8;
+            border: 1px solid #0284c7;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
         .upload-label {
             display: flex;
             flex-direction: column;
@@ -328,8 +357,14 @@
     </header>
 
     <div class="container">
+
+        <div class="ios-tip-banner">
+            <span style="font-size: 1.4rem;">⚠️</span>
+            <div>
+                <strong>Astuce iPhone :</strong> Vérifie que le <strong>bouton silencieux</strong> sur la tranche gauche de ton iPhone n'est pas sur orange, et <strong>monte le volume</strong> avec les boutons physiques !
+            </div>
+        </div>
         
-        <!-- CARTE LECTEUR VOITURE -->
         <div class="player-card">
             <div class="now-playing-label" id="trackCategory">MODULE SÉLECTIONNÉ</div>
             <div class="track-title" id="trackTitle">1. Random Bit — Entretien Medicaid & CMS</div>
@@ -347,9 +382,10 @@
                 <button class="pill-btn" id="spd15">1.5x</button>
                 <button class="pill-btn" id="btnStop">⏹ Stop</button>
             </div>
+
+            <button class="btn-test-sound" id="btnTestSound">🔊 Tester le son de mon iPhone (Bip sonore)</button>
         </div>
 
-        <!-- SECTION UPLOAD PDF AVEC LABEL NATIF APPLE -->
         <div class="card">
             <h2>📂 Lire un PDF depuis ton iPhone</h2>
             
@@ -367,7 +403,6 @@
             </div>
         </div>
 
-        <!-- MODULES PRÉ-CHARGÉS -->
         <div class="card">
             <h2>🎧 Modules de Révision Intégrés (1 Clic)</h2>
             <div class="playlist" id="playlistContainer">
@@ -402,7 +437,6 @@
             </div>
         </div>
 
-        <!-- APERÇU DU TEXTE -->
         <div class="card">
             <h2>📖 Texte en cours de lecture</h2>
             <div class="reader-box" id="readerText">
@@ -411,6 +445,8 @@
         </div>
 
     </div>
+
+    <audio id="nativeAudio" src="episode1.m4a" preload="none"></audio>
 
     <footer>
         Conçu pour Moussa Toure • Déployé sur GitHub Pages / Vercel • Compatible CarPlay
@@ -479,11 +515,13 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         let sentences = [];
         let sentenceIndex = 0;
         let playbackRate = 1.0;
+        let voices = [];
 
         const btnPlay = document.getElementById('btnPlay');
         const btnPrev = document.getElementById('btnPrev');
         const btnNext = document.getElementById('btnNext');
         const btnStop = document.getElementById('btnStop');
+        const btnTestSound = document.getElementById('btnTestSound');
         const trackTitle = document.getElementById('trackTitle');
         const trackCategory = document.getElementById('trackCategory');
         const trackStatus = document.getElementById('trackStatus');
@@ -491,6 +529,58 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         const pdfInput = document.getElementById('pdfInput');
         const pasteInput = document.getElementById('pasteInput');
         const btnLoadPaste = document.getElementById('btnLoadPaste');
+        const nativeAudio = document.getElementById('nativeAudio');
+
+        function populateVoices() {
+            if (synth) {
+                voices = synth.getVoices();
+            }
+        }
+        populateVoices();
+        if (synth && synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = populateVoices;
+        }
+
+        function unlockIOSAudio() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) {
+                    const ctx = new AudioCtx();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    gain.gain.value = 0.001;
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(0);
+                    osc.stop(0.05);
+                }
+            } catch (e) {
+                console.log("AudioContext unlock", e);
+            }
+        }
+
+        btnTestSound.addEventListener('click', () => {
+            unlockIOSAudio();
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (AudioCtx) {
+                    const ctx = new AudioCtx();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = "sine";
+                    osc.frequency.setValueAtTime(660, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.4);
+                    trackStatus.innerText = "🔊 Bip sonore joué ! Si tu l'as entendu, ton son est actif !";
+                }
+            } catch (e) {
+                alert("Erreur test sonore: " + e.message);
+            }
+        });
 
         function loadModule(idx) {
             stopAudio();
@@ -517,7 +607,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
 
         function speakCurrentSentence() {
             if (!synth) {
-                alert("La synthèse vocale n'est pas supportée.");
+                alert("La synthèse vocale n'est pas supportée sur ce navigateur.");
                 return;
             }
 
@@ -534,12 +624,20 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
 
             const text = sentences[sentenceIndex];
             const utter = new SpeechSynthesisUtterance(text);
+            utter.volume = 1.0;
             utter.rate = playbackRate;
+            utter.pitch = 1.0;
 
-            if (/[a-zA-Z]{4,}/.test(text) && (text.includes("Question") || text.includes("Answer") || text.includes("the") || text.includes("framework"))) {
+            populateVoices();
+            const isEnglish = /[a-zA-Z]{4,}/.test(text) && (text.includes("Question") || text.includes("Answer") || text.includes("the") || text.includes("framework") || text.includes("audit"));
+            if (isEnglish) {
                 utter.lang = "en-US";
+                const enV = voices.find(v => v.lang && v.lang.startsWith("en"));
+                if (enV) utter.voice = enV;
             } else {
                 utter.lang = "fr-FR";
+                const frV = voices.find(v => v.lang && v.lang.startsWith("fr"));
+                if (frV) utter.voice = frV;
             }
 
             utter.onstart = () => {
@@ -557,7 +655,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             };
 
             utter.onerror = (e) => {
-                console.error("Speech error:", e);
+                console.log("Speech error:", e);
                 sentenceIndex++;
                 if (isSpeaking && sentenceIndex < sentences.length) {
                     speakCurrentSentence();
@@ -570,6 +668,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         }
 
         function togglePlay() {
+            unlockIOSAudio();
             if (isSpeaking) {
                 isSpeaking = false;
                 synth.cancel();
@@ -592,6 +691,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         btnStop.addEventListener('click', stopAudio);
 
         btnPrev.addEventListener('click', () => {
+            unlockIOSAudio();
             sentenceIndex = Math.max(0, sentenceIndex - 2);
             if (isSpeaking) {
                 speakCurrentSentence();
@@ -601,6 +701,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         });
 
         btnNext.addEventListener('click', () => {
+            unlockIOSAudio();
             sentenceIndex = Math.min(sentences.length - 1, sentenceIndex + 2);
             if (isSpeaking) {
                 speakCurrentSentence();
@@ -630,6 +731,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             const file = e.target.files[0];
             if (!file) return;
 
+            unlockIOSAudio();
             stopAudio();
             trackCategory.innerText = "DOCUMENT PERSONNEL DÉTECTÉ";
             trackTitle.innerText = file.name;
@@ -682,6 +784,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         });
 
         btnLoadPaste.addEventListener('click', () => {
+            unlockIOSAudio();
             const val = pasteInput.value.trim();
             if (!val) {
                 alert("Colle d'abord du texte dans la boîte !");
@@ -692,7 +795,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             trackTitle.innerText = "Révision Personnalisée";
             readerText.innerText = val;
             prepareText(val);
-            trackStatus.innerText = `✅ Texte chargé (${sentences.length} phrases) ! Lecture immédiate...`;
+            trackStatus.innerText = `✅ Texte chargé (${sentences.length} phrases) ! Lecture...`;
             isSpeaking = true;
             speakCurrentSentence();
         });
