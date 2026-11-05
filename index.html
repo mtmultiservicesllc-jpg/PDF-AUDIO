@@ -7,9 +7,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="GRC Drive">
     <meta name="theme-color" content="#0b0f19">
-    <title>GRC Drive Audio — Révision Vocale en Conduite</title>
-    <!-- PDF.js CDN for extracting text from any PDF directly in browser -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <title>GRC Drive Audio — Révision Vocale iPhone & Voiture</title>
+
+    <!-- PDF.JS VIA JSDELIVR (HIGH RELIABILITY ON IOS SAFARI) -->
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -36,19 +38,19 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 16px;
-            padding-bottom: 40px;
+            padding: 14px;
+            padding-bottom: 50px;
         }
 
         header {
             text-align: center;
-            padding: 12px 0 16px;
+            padding: 10px 0 14px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         header h1 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             background: linear-gradient(135deg, #60a5fa, #34d399);
             -webkit-background-clip: text;
@@ -57,26 +59,25 @@
 
         header p {
             color: var(--text-sub);
-            font-size: 0.85rem;
-            margin-top: 4px;
+            font-size: 0.8rem;
+            margin-top: 2px;
         }
 
         .container {
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto;
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            flex: 1;
+            gap: 14px;
         }
 
-        /* CAR-FRIENDLY PLAYER CARD */
+        /* BIG DRIVING CARD */
         .player-card {
             background-color: var(--card-bg);
             border: 2px solid #1e3a8a;
             border-radius: 24px;
-            padding: 24px 20px;
+            padding: 20px 16px;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
@@ -85,16 +86,16 @@
         }
 
         .now-playing-label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--accent-cyan);
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .track-title {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 700;
             margin-bottom: 4px;
             line-height: 1.3;
@@ -102,18 +103,20 @@
 
         .track-status {
             font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-bottom: 18px;
+            color: var(--accent-green);
+            font-weight: 600;
+            margin-bottom: 16px;
+            min-height: 20px;
         }
 
-        /* BIG CAR CONTROLS */
+        /* BIG TACTILE CONTROLS FOR CAR */
         .controls-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 18px;
             width: 100%;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .btn-circle {
@@ -126,7 +129,7 @@
             justify-content: center;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: transform 0.1s ease;
             user-select: none;
         }
 
@@ -136,75 +139,46 @@
         }
 
         .btn-skip {
-            width: 64px;
-            height: 64px;
-            font-size: 1.1rem;
+            width: 62px;
+            height: 62px;
+            font-size: 1.05rem;
         }
 
         .btn-play-big {
-            width: 96px;
-            height: 96px;
+            width: 92px;
+            height: 92px;
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
             border: 3px solid #60a5fa;
             font-size: 2.2rem;
             box-shadow: 0 0 25px rgba(37, 99, 235, 0.6);
         }
 
-        .btn-play-big:active {
-            transform: scale(0.94);
-            box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+        .pulse-play {
+            animation: pulse-glow 1.5s infinite;
         }
 
-        /* PROGRESS BAR FOR AUDIO TRACKS */
-        .progress-container {
-            width: 100%;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6); transform: scale(1); }
+            50% { box-shadow: 0 0 35px rgba(16, 185, 129, 0.9); transform: scale(1.05); }
+            100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6); transform: scale(1); }
         }
 
-        .progress-bar {
-            flex: 1;
-            height: 8px;
-            background: #1e293b;
-            border-radius: 4px;
-            overflow: hidden;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #3b82f6, #06b6d4);
-            border-radius: 4px;
-            transition: width 0.1s linear;
-        }
-
-        .time-label {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            min-width: 40px;
-        }
-
-        /* SPEED & VOICE CONTROLS */
+        /* SPEED BUTTONS */
         .sub-controls {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 6px;
         }
 
         .pill-btn {
             background: #1e293b;
             color: var(--text-main);
             border: 1px solid #334155;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
         }
@@ -215,7 +189,7 @@
             color: white;
         }
 
-        /* CARDS */
+        /* SECTION CARDS */
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -224,30 +198,75 @@
         }
 
         .card h2 {
-            font-size: 1.05rem;
+            font-size: 1.0rem;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .file-dropzone {
-            border: 2px dashed #334155;
-            border-radius: 12px;
-            padding: 20px 12px;
+        /* ACCESSIBLE UPLOAD BUTTON FOR IOS */
+        .upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #3b82f6;
+            border-radius: 14px;
+            padding: 22px 14px;
             text-align: center;
             cursor: pointer;
+            background: rgba(37, 99, 235, 0.1);
             transition: all 0.2s;
-            background: rgba(30, 41, 59, 0.3);
         }
 
-        .file-dropzone:hover {
-            border-color: var(--accent-cyan);
-            background: rgba(30, 41, 59, 0.6);
+        .upload-label:active {
+            background: rgba(37, 99, 235, 0.25);
+            border-color: #60a5fa;
         }
 
-        .file-dropzone input {
+        .upload-label strong {
+            font-size: 1.05rem;
+            color: #93c5fd;
+            margin-top: 6px;
+        }
+
+        .upload-label p {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        /* Hidden standard file input linked directly to label */
+        #pdfInput {
             display: none;
+        }
+
+        /* PASTE TEXT OPTION */
+        .paste-box {
+            width: 100%;
+            height: 90px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 10px;
+            color: white;
+            font-size: 0.85rem;
+            resize: none;
+            margin-top: 10px;
+        }
+
+        .btn-load-text {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-top: 6px;
+            cursor: pointer;
         }
 
         /* PLAYLIST ITEMS */
@@ -255,7 +274,6 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 8px;
         }
 
         .playlist-item {
@@ -267,47 +285,33 @@
             align-items: center;
             cursor: pointer;
             border: 1px solid transparent;
-            transition: all 0.15s;
         }
 
-        .playlist-item:hover, .playlist-item.active {
+        .playlist-item.active {
             border-color: var(--accent-blue);
             background: #1e3a8a;
         }
 
         .playlist-title {
             font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            font-size: 0.9rem;
         }
 
-        .playlist-duration {
-            font-size: 0.8rem;
+        .playlist-desc {
+            font-size: 0.75rem;
             color: var(--text-sub);
             margin-top: 2px;
         }
 
-        .badge-studio {
-            background: #059669;
-            color: white;
-            font-size: 0.65rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* READER TEXT */
+        /* READER BOX */
         .reader-box {
             background: #0f172a;
             border: 1px solid #1e293b;
             border-radius: 12px;
-            padding: 14px;
-            max-height: 160px;
+            padding: 12px;
+            max-height: 150px;
             overflow-y: auto;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.5;
             color: #cbd5e1;
             text-align: left;
@@ -326,30 +330,21 @@
 
     <header>
         <h1>🚗 GRC Drive Audio Player</h1>
-        <p>Révision mains-libres en voiture • Compatible iPhone, CarPlay & Bluetooth</p>
+        <p>Révision mains-libres • Optimisé iPhone, CarPlay & Bluetooth</p>
     </header>
 
     <div class="container">
         
-        <!-- MAIN CAR DRIVING CONTROLS -->
+        <!-- MAIN CAR DRIVING CARD -->
         <div class="player-card">
-            <div class="now-playing-label" id="trackCategory">PODCAST HD PRÉ-ENREGISTRÉ</div>
-            <div class="track-title" id="trackTitle">Random Bit — Medicaid GRC Mock Interview</div>
-            <div class="track-status" id="trackStatus">Prêt à lire • Tape sur Play pour démarrer</div>
-
-            <!-- AUDIO PROGRESS BAR -->
-            <div class="progress-container" id="progressContainer">
-                <span class="time-label" id="currentTimeLabel">0:00</span>
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <span class="time-label" id="totalTimeLabel">4:41</span>
-            </div>
+            <div class="now-playing-label" id="trackCategory">MODULE SÉLECTIONNÉ</div>
+            <div class="track-title" id="trackTitle">1. Random Bit — Entretien Medicaid & CMS</div>
+            <div class="track-status" id="trackStatus">Prêt • Appuie sur le gros bouton ▶ PLAY</div>
 
             <!-- BIG BUTTONS -->
             <div class="controls-row">
                 <button class="btn-circle btn-skip" id="btnPrev" title="Reculer 15s">⏮ 15s</button>
-                <button class="btn-circle btn-play-big" id="btnPlay" title="Lecture / Pause">▶</button>
+                <button class="btn-circle btn-play-big pulse-play" id="btnPlay" title="Lecture / Pause">▶</button>
                 <button class="btn-circle btn-skip" id="btnNext" title="Avancer 15s">15s ⏭</button>
             </div>
 
@@ -358,121 +353,111 @@
                 <button class="pill-btn active" id="spd1">1.0x</button>
                 <button class="pill-btn" id="spd12">1.25x</button>
                 <button class="pill-btn" id="spd15">1.5x</button>
-                <button class="pill-btn" id="voiceToggle">🗣️ Voix: Naturelle</button>
+                <button class="pill-btn" id="btnStop">⏹ Stop</button>
             </div>
         </div>
 
-        <!-- HIDDEN NATIVE AUDIO ELEMENT FOR BACKGROUND / CARPLAY PLAYBACK -->
-        <audio id="nativeAudio" src="episode1.m4a" preload="auto"></audio>
-
-        <!-- TEXT PREVIEW / LIVE SENTENCE -->
+        <!-- UPLOAD SECTION WITH NATIVE IOS LABEL -->
         <div class="card">
-            <h2>📖 Texte en cours de révision</h2>
-            <div class="reader-box" id="readerText">
-                Le module d'entretien Random Bit (CMS ARC-AMPE, HITRUST r2, Preuves objectives, CAPs) est prêt. Appuie sur Play au volant pour lancer l'écoute continue en Bluetooth.
+            <h2>📂 Lire un PDF depuis ton iPhone</h2>
+            
+            <!-- Standard native label that triggers iOS file sheet reliably -->
+            <label for="pdfInput" class="upload-label" id="uploadLabel">
+                <span style="font-size: 2.2rem;">📄</span>
+                <strong>Appuie ici pour choisir un PDF</strong>
+                <p>Ouvre tes fichiers iPhone, iCloud Drive ou Google Drive</p>
+            </label>
+            <input type="file" id="pdfInput" accept="application/pdf, text/plain">
+
+            <!-- FAST PASTE BACKUP OPTION -->
+            <div style="margin-top: 14px;">
+                <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 4px;">Ou colle directement du texte :</p>
+                <textarea class="paste-box" id="pasteInput" placeholder="Colle ici un texte ou des questions d'entretien..."></textarea>
+                <button class="btn-load-text" id="btnLoadPaste">▶ Charger et Écouter ce texte</button>
             </div>
         </div>
 
-        <!-- BUILT-IN REVISION PLAYLIST -->
+        <!-- BUILT-IN PLAYLIST -->
         <div class="card">
-            <h2>🎧 Modules de Révision Intégrés</h2>
+            <h2>🎧 Modules de Révision Intégrés (1 Clic)</h2>
             <div class="playlist" id="playlistContainer">
                 <div class="playlist-item active" onclick="loadModule(0)">
                     <div>
-                        <div class="playlist-title">
-                            1. Random Bit — Entretien Medicaid & CMS
-                            <span class="badge-studio">Podcast Studio HD</span>
-                        </div>
-                        <div class="playlist-duration">Crosswalks, traçabilité et preuves objectives (4 questions • 4m 41s)</div>
+                        <div class="playlist-title">1. Random Bit — Entretien Medicaid & CMS ARC-AMPE</div>
+                        <div class="playlist-desc">Crosswalks, traçabilité et preuves objectives (4 questions)</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(1)">
                     <div>
                         <div class="playlist-title">2. Maestro Search — Scoping, SOW & CMMC 2.0</div>
-                        <div class="playlist-duration">Cadrage client, LOE et tests d'intrusion ($60-$90/hr)</div>
+                        <div class="playlist-desc">Cadrage client, LOE et tests d'intrusion ($60-$90/hr)</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(2)">
                     <div>
                         <div class="playlist-title">3. Brooksource — NIST SP 800-171 & TSA 23-01</div>
-                        <div class="playlist-duration">System Security Plans (SSPs), CAPs et conformité transport</div>
+                        <div class="playlist-desc">Plans de sécurité (SSPs), CAPs et conformité transport</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(3)">
                     <div>
                         <div class="playlist-title">4. RemoteHunter — Fintech, GLBA & SOC 2 Type II</div>
-                        <div class="playlist-duration">Réglementation bancaire, FFIEC et gouvernance de l'IA</div>
+                        <div class="playlist-desc">Réglementation bancaire, FFIEC et gouvernance IA</div>
                     </div>
                     <span>▶</span>
                 </div>
             </div>
         </div>
 
-        <!-- UPLOAD CUSTOM PDF -->
+        <!-- TEXT VIEWER -->
         <div class="card">
-            <h2>📄 Lire un autre PDF (Depuis ton iPhone Files / Drive)</h2>
-            <div class="file-dropzone" onclick="document.getElementById('pdfInput').click()">
-                <div style="font-size: 1.8rem; margin-bottom: 6px;">📂</div>
-                <strong>Choisis ou glisse un document PDF ici</strong>
-                <p style="font-size: 0.8rem; color: var(--text-sub); margin-top: 4px;">Le texte sera extrait et lu à haute voix en continu dans ta voiture</p>
-                <input type="file" id="pdfInput" accept="application/pdf, text/plain">
+            <h2>📖 Texte en cours de lecture</h2>
+            <div class="reader-box" id="readerText">
+                Sélectionne un module ou charge un fichier PDF pour commencer.
             </div>
         </div>
 
     </div>
 
+    <!-- AUDIO FOR EPISODE 1 (WITH SAFE SPEECH FALLBACK) -->
+    <audio id="nativeAudio" src="episode1.m4a" preload="none"></audio>
+
     <footer>
-        Conçu pour Moussa Toure • Déployé sur Vercel / GitHub • Compatible iPhone, Safari & CarPlay
+        Conçu pour Moussa Toure • Déployé sur GitHub Pages / Vercel • Compatible CarPlay
     </footer>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- LOGIC -->
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        // Set up PDF.js worker
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+        }
 
-        const nativeAudio = document.getElementById('nativeAudio');
-        let currentMode = "audio"; // "audio" for episode1.m4a or "speech" for TTS
-        let synth = window.speechSynthesis;
-        let utterance = null;
-        let currentSpeed = 1.0;
-        let sentences = [];
-        let currentSentenceIdx = 0;
-        let selectedVoice = null;
-
-        // UI ELEMENTS
-        const btnPlay = document.getElementById('btnPlay');
-        const btnPrev = document.getElementById('btnPrev');
-        const btnNext = document.getElementById('btnNext');
-        const trackTitle = document.getElementById('trackTitle');
-        const trackCategory = document.getElementById('trackCategory');
-        const trackStatus = document.getElementById('trackStatus');
-        const readerText = document.getElementById('readerText');
-        const progressFill = document.getElementById('progressFill');
-        const progressBar = document.getElementById('progressBar');
-        const currentTimeLabel = document.getElementById('currentTimeLabel');
-        const totalTimeLabel = document.getElementById('totalTimeLabel');
-        const voiceToggle = document.getElementById('voiceToggle');
-
-        // MODULES CONTENT
+        // PRESET MODULES
         const modules = [
             {
-                title: "Random Bit — Medicaid GRC Mock Interview",
-                category: "PODCAST STUDIO HD (ÉCOUTE CONTINUE)",
-                mode: "audio",
-                audioSrc: "episode1.m4a",
-                text: `Session de révision complète pour Random Bit LLC (State Medicaid Agency GRC Support).
-Ce podcast studio couvre les 4 questions clés d'entretien:
-1. Conception de crosswalk CMS ARC-AMPE, HITRUST r2 et NIST CSF.
-2. Cycle de vie et fraîcheur des preuves objectives dans le temps.
-3. Gestion d'un rejet de preuve par l'auditeur CMS pour manque de granularité.
-4. Intégration des retours d'expérience dans les runbooks d'audit.`
+                title: "Random Bit — Entretien Medicaid & CMS",
+                category: "MEDICAID GRC MOCK INTERVIEW",
+                text: `Session de révision pour le poste Governance and Compliance Consultant chez Random Bit.
+
+Question 1: How would you approach designing a control crosswalk mapping CMS ARC-AMPE and HITRUST r2 requirements with NIST CSF to ensure traceability?
+Answer: I use a five-phase methodology focused on bidirectional traceability and the test once, satisfy many principle. First, establish NIST SP 800-53 Revision 5 as the underlying technical pivot, and NIST CSF 2.0 as the organizational taxonomy. Second, define multi-dimensional traceability attributes including regulatory citations, internal control narratives, SOP references, technical control owners, and objective evidence artifacts. Third, apply the highest common denominator principle: designing controls to meet the strictest requirement among CMS and HITRUST to eliminate duplicate testing. Fourth, ensure bidirectional traceability from high-level mandates down to raw evidence, and from audit findings back to regulatory clauses to prioritize CAPs. Fifth, operationalize in a centralized GRC repository with dynamic change triggers.
+
+Question 2: How would you ensure objective evidence artifacts remain current and aligned with evolving CMS, HITRUST, and NIST expectations?
+Answer: I implement a Continuous Evidence Governance Lifecycle based on five pillars: One: Enforce the four-pillar evidence quality gate: Relevance, Completeness, Accuracy, and Currency with strict metadata tagging. Two: Implement cadence-based schedules, automating technical exports continuously, and using an Evidence Calendar with 30-day lookaheads for periodic administrative reviews. Three: Conduct regulatory horizon scanning and delta impact analyses when frameworks evolve. Four: Integrate with the Change Advisory Board so major architectural changes trigger an automatic evidence refresh. Five: Execute quarterly pre-audit surveillance reviews on a rotating 10 to 15 percent sample to catch and remediate staleness early.
+
+Question 3: How would you handle an assessor rejecting a key artifact during a CMS audit citing insufficient granularity under tight deadlines?
+Answer: Under active audit conditions, maintaining composure and audit trust is paramount. First, hold an immediate ten-minute calibration huddle with the lead assessor to pinpoint the exact schema, fields, or sample boundaries needed. Second, mobilize a two-hour technical sprint with the control owner to refine queries and extract raw event logs. Third, offer an immediate live screen-share demonstration so the assessor observes the query executed live against the system of record. Fourth, deliver a Cure Package with an explanatory memo linking every rejected point to the updated evidence rows. Fifth, if needed, negotiate to classify the issue as a documentation observation rather than a control failure, presenting a proactive Corrective Action Plan with committed milestones.
+
+Question 4: How would you ensure lessons learned from this rejected artifact are integrated into ongoing procedures to prevent recurring deficiencies?
+Answer: I execute a closed-loop Lessons Learned Protocol: First, conduct a blameless root cause analysis within five days. Second, update the specific Evidence Runbook with exact CLI commands, data schemas, and a visual gold standard example. Third, harden the pre-submission Quality Assurance gate requiring verification that artifacts contain raw transaction records. Fourth, automate extraction scripts into scheduled pipelines. Fifth, flag the control as a High Scrutiny Item in our GRC register, ensuring it is automatically tested during next quarter's internal mock audit.`
             },
             {
-                title: "Maestro Search — Scoping, SOW & CMMC 2.0",
-                category: "CADRAGE AVANT-VENTE & GRC ($60-$90/HR)",
-                mode: "speech",
+                title: "Maestro Search — Scoping & CMMC 2.0",
+                category: "AVANT-VENTE & GRC ($60-$90/HR)",
                 text: `Session de révision Maestro Search.
 Rôle: Information Security Consultant pour le cadrage d'avant-vente et GRC.
 Compétences clés:
@@ -483,10 +468,9 @@ Passation aux équipes techniques: Assurer la remise d'inventaires d'actifs clai
             },
             {
                 title: "Brooksource — NIST SP 800-171 & TSA 23-01",
-                category: "AVIATION & INFRASTRUCTURE FORTUNE 500",
-                mode: "speech",
+                category: "AVIATION FORTUNE 500 ($45/HR)",
                 text: `Session de révision Brooksource Fortune 500 à Atlanta.
-Poste: Information Security Compliance Analyst ($45/hr Hybrid).
+Poste: Information Security Compliance Analyst.
 Points essentiels:
 NIST SP 800-171 et Plans de Sécurité Système (SSP): Documentation des limites système, des flux de données et des architectures réseau sur les 110 exigences de sécurité.
 TSA Joint Emergency Amendment 23-01: Directives de cybersécurité aéroportuaires et transport, validation de la segmentation réseau entre réseaux opérationnels et corporate IT.
@@ -494,9 +478,8 @@ Plans d'Actions Correctives (CAPs): Suivi des déficiences d'audit, coordination
 Audits et tests de contrôles: Vérification de la conception (Test of Design) et de l'efficacité opérationnelle (Test of Operating Effectiveness) sur les journaux d'accès privilégiés et les configurations MFA.`
             },
             {
-                title: "RemoteHunter — Fintech, GLBA & SOC 2 Type II",
-                category: "BANQUE DIGITALE & FINTECH ($72K-$90K)",
-                mode: "speech",
+                title: "RemoteHunter — Fintech & SOC 2 Type II",
+                category: "BANQUE DIGITALE ($72K-$90K)",
                 text: `Session de révision RemoteHunter pour plateforme bancaire.
 Poste: Compliance Specialist pour banques et coopératives de crédit américaines.
 Points essentiels:
@@ -507,158 +490,146 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             }
         ];
 
-        // TIME FORMATTER
-        function formatTime(sec) {
-            if (isNaN(sec)) return "0:00";
-            const m = Math.floor(sec / 60);
-            const s = Math.floor(sec % 60);
-            return `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
+        // SPEECH ENGINE WITH CHUNKED PLAYBACK FOR IOS SAFARI RELIABILITY
+        const synth = window.speechSynthesis;
+        let isSpeaking = false;
+        let sentences = [];
+        let sentenceIndex = 0;
+        let playbackRate = 1.0;
 
-        // NATIVE AUDIO EVENTS (FOR CARPLAY / BACKGROUND)
-        nativeAudio.addEventListener('timeupdate', () => {
-            if (currentMode === "audio") {
-                const pct = (nativeAudio.currentTime / nativeAudio.duration) * 100;
-                progressFill.style.width = `${pct}%`;
-                currentTimeLabel.innerText = formatTime(nativeAudio.currentTime);
-                totalTimeLabel.innerText = formatTime(nativeAudio.duration);
-            }
-        });
+        // UI ELEMENTS
+        const btnPlay = document.getElementById('btnPlay');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const btnStop = document.getElementById('btnStop');
+        const trackTitle = document.getElementById('trackTitle');
+        const trackCategory = document.getElementById('trackCategory');
+        const trackStatus = document.getElementById('trackStatus');
+        const readerText = document.getElementById('readerText');
+        const pdfInput = document.getElementById('pdfInput');
+        const pasteInput = document.getElementById('pasteInput');
+        const btnLoadPaste = document.getElementById('btnLoadPaste');
 
-        nativeAudio.addEventListener('ended', () => {
-            btnPlay.innerText = "▶";
-            trackStatus.innerText = "Épisode terminé ✅ Appuie sur Play pour réécouter";
-        });
-
-        // PROGRESS BAR CLICK SEEK
-        progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            if (currentMode === "audio") {
-                nativeAudio.currentTime = pos * nativeAudio.duration;
-            }
-        });
-
-        // INIT VOICES
-        function initVoices() {
-            let voices = synth.getVoices();
-            selectedVoice = voices.find(v => v.name.includes("Samantha")) || 
-                            voices.find(v => v.lang.startsWith("en") && !v.name.includes("Bad")) || 
-                            voices[0];
-            if (selectedVoice) {
-                voiceToggle.innerText = `🗣️ Voix: ${selectedVoice.name}`;
-            }
-        }
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = initVoices;
-        }
-        initVoices();
-
-        // LOAD MODULE
+        // LOAD PRESET MODULE
         function loadModule(idx) {
-            stopAll();
+            stopAudio();
             const mod = modules[idx];
             trackTitle.innerText = mod.title;
             trackCategory.innerText = mod.category;
             readerText.innerText = mod.text;
-            currentMode = mod.mode;
+            trackStatus.innerText = "Module chargé • Appuie sur ▶ PLAY";
+            btnPlay.classList.add('pulse-play');
 
             document.querySelectorAll('.playlist-item').forEach((el, i) => {
                 if (i === idx) el.classList.add('active');
                 else el.classList.remove('active');
             });
 
-            if (currentMode === "audio") {
-                trackStatus.innerText = "Podcast Studio prêt • Appuie sur Play pour lancer l'écoute Bluetooth";
-                totalTimeLabel.innerText = "4:41";
-                currentTimeLabel.innerText = "0:00";
-                progressFill.style.width = "0%";
+            prepareText(mod.text);
+        }
+
+        // PREPARE SENTENCES (Chunking prevents iOS Safari 15-second speech cutoff)
+        function prepareText(rawText) {
+            sentences = rawText.match(/[^.!?\n]+[.!?\n]+/g) || [rawText];
+            sentences = sentences.map(s => s.trim()).filter(s => s.length > 0);
+            sentenceIndex = 0;
+        }
+
+        // SPEAK NEXT SENTENCE
+        function speakCurrentSentence() {
+            if (!synth) {
+                alert("La synthèse vocale n'est pas supportée par ce navigateur.");
+                return;
+            }
+
+            if (sentenceIndex >= sentences.length) {
+                isSpeaking = false;
+                btnPlay.innerText = "▶";
+                btnPlay.classList.remove('pulse-play');
+                trackStatus.innerText = "✅ Session terminée ! Appuie sur Play pour réécouter";
+                sentenceIndex = 0;
+                return;
+            }
+
+            synth.cancel();
+
+            const text = sentences[sentenceIndex];
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.rate = playbackRate;
+
+            // Auto-detect language
+            if (/[a-zA-Z]{4,}/.test(text) && (text.includes("Question") || text.includes("Answer") || text.includes("the") || text.includes("framework"))) {
+                utter.lang = "en-US";
             } else {
-                trackStatus.innerText = "Lecture vocale prête • Appuie sur Play";
-                totalTimeLabel.innerText = "Lecture";
-                currentTimeLabel.innerText = "Text";
-                sentences = mod.text.match(/[^.!?\n]+[.!?\n]+/g) || [mod.text];
-                currentSentenceIdx = 0;
+                utter.lang = "fr-FR";
+            }
+
+            utter.onstart = () => {
+                isSpeaking = true;
+                btnPlay.innerText = "⏸";
+                btnPlay.classList.remove('pulse-play');
+                trackStatus.innerText = `Lecture en cours (${sentenceIndex + 1}/${sentences.length})... 🚗🔊`;
+            };
+
+            utter.onend = () => {
+                sentenceIndex++;
+                if (isSpeaking) {
+                    speakCurrentSentence();
+                }
+            };
+
+            utter.onerror = (e) => {
+                console.error("Speech error:", e);
+                sentenceIndex++;
+                if (isSpeaking && sentenceIndex < sentences.length) {
+                    speakCurrentSentence();
+                } else {
+                    stopAudio();
+                }
+            };
+
+            synth.speak(utter);
+        }
+
+        // TOGGLE PLAY / PAUSE
+        function togglePlay() {
+            if (isSpeaking) {
+                isSpeaking = false;
+                synth.cancel();
+                btnPlay.innerText = "▶";
+                trackStatus.innerText = "En pause ⏸ (Appuie sur Play pour reprendre)";
+            } else {
+                isSpeaking = true;
+                speakCurrentSentence();
             }
         }
 
-        function stopAll() {
-            nativeAudio.pause();
+        function stopAudio() {
+            isSpeaking = false;
             synth.cancel();
             btnPlay.innerText = "▶";
+            trackStatus.innerText = "Arrêté ⏹";
         }
 
-        // PLAY / PAUSE TOGGLE
-        btnPlay.addEventListener('click', () => {
-            if (currentMode === "audio") {
-                if (nativeAudio.paused) {
-                    nativeAudio.playbackRate = currentSpeed;
-                    nativeAudio.play();
-                    btnPlay.innerText = "⏸";
-                    trackStatus.innerText = "Lecture en cours... 🚗🔊 (Compatible CarPlay/Bluetooth)";
-                } else {
-                    nativeAudio.pause();
-                    btnPlay.innerText = "▶";
-                    trackStatus.innerText = "En pause ⏸";
-                }
-            } else {
-                if (synth.speaking && !synth.paused) {
-                    synth.pause();
-                    btnPlay.innerText = "▶";
-                    trackStatus.innerText = "En pause ⏸";
-                } else if (synth.paused) {
-                    synth.resume();
-                    btnPlay.innerText = "⏸";
-                    trackStatus.innerText = "Lecture vocale en cours... 🚗🔊";
-                } else {
-                    playSpeechFrom(currentSentenceIdx);
-                }
-            }
-        });
+        btnPlay.addEventListener('click', togglePlay);
+        btnStop.addEventListener('click', stopAudio);
 
-        function playSpeechFrom(idx) {
-            synth.cancel();
-            if (idx >= sentences.length) idx = 0;
-            currentSentenceIdx = idx;
-            const textToSpeak = sentences.slice(idx).join(' ');
-
-            utterance = new SpeechSynthesisUtterance(textToSpeak);
-            if (selectedVoice) utterance.voice = selectedVoice;
-            utterance.rate = currentSpeed;
-
-            utterance.onstart = () => {
-                btnPlay.innerText = "⏸";
-                trackStatus.innerText = "Lecture vocale en cours... 🚗🔊";
-            };
-
-            utterance.onend = () => {
-                btnPlay.innerText = "▶";
-                trackStatus.innerText = "Session terminée ✅ Tape sur Play pour réécouter";
-                currentSentenceIdx = 0;
-            };
-
-            synth.speak(utterance);
-        }
-
-        // SKIP 15S
         btnPrev.addEventListener('click', () => {
-            if (currentMode === "audio") {
-                nativeAudio.currentTime = Math.max(0, nativeAudio.currentTime - 15);
+            sentenceIndex = Math.max(0, sentenceIndex - 2);
+            if (isSpeaking) {
+                speakCurrentSentence();
             } else {
-                currentSentenceIdx = Math.max(0, currentSentenceIdx - 3);
-                playSpeechFrom(currentSentenceIdx);
+                trackStatus.innerText = `Reculé à la phrase ${sentenceIndex + 1}`;
             }
-            trackStatus.innerText = "⏮ Reculé de 15s";
         });
 
         btnNext.addEventListener('click', () => {
-            if (currentMode === "audio") {
-                nativeAudio.currentTime = Math.min(nativeAudio.duration, nativeAudio.currentTime + 15);
+            sentenceIndex = Math.min(sentences.length - 1, sentenceIndex + 2);
+            if (isSpeaking) {
+                speakCurrentSentence();
             } else {
-                currentSentenceIdx = Math.min(sentences.length - 1, currentSentenceIdx + 3);
-                playSpeechFrom(currentSentenceIdx);
+                trackStatus.innerText = `Avancé à la phrase ${sentenceIndex + 1}`;
             }
-            trackStatus.innerText = "⏭ Avancé de 15s";
         });
 
         // SPEED BUTTONS
@@ -670,57 +641,88 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
 
         spdBtns.forEach(item => {
             item.btn.addEventListener('click', () => {
-                currentSpeed = item.val;
-                nativeAudio.playbackRate = currentSpeed;
+                playbackRate = item.val;
                 spdBtns.forEach(s => s.btn.classList.remove('active'));
                 item.btn.classList.add('active');
-                if (currentMode === "speech" && synth.speaking) {
-                    playSpeechFrom(currentSentenceIdx);
+                if (isSpeaking) {
+                    speakCurrentSentence();
                 }
             });
         });
 
-        // PDF FILE UPLOAD HANDLER
-        const pdfInput = document.getElementById('pdfInput');
+        // ROBUST PDF INPUT CHANGE HANDLER
         pdfInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            stopAll();
-            currentMode = "speech";
-            trackCategory = "FICHIER PERSONNEL CHARGÉ";
+            stopAudio();
+            trackCategory.innerText = "DOCUMENT PERSONNEL DÉTECTÉ";
             trackTitle.innerText = file.name;
-            trackStatus.innerText = "Extraction du texte en cours...";
+            trackStatus.innerText = "⏳ Extraction du texte en cours...";
 
-            if (file.type === "application/pdf") {
+            // Check if PDF
+            if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
-                    const arrayBuffer = await file.arrayBuffer();
-                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    let fullText = "";
+                    const reader = new FileReader();
+                    reader.onload = async function() {
+                        try {
+                            const typedarray = new Uint8Array(this.result);
+                            const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+                            let extractedText = "";
 
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const textContent = await page.getTextContent();
-                        const pageText = textContent.items.map(item => item.str).join(' ');
-                        fullText += pageText + "\n\n";
-                    }
+                            for (let i = 1; i <= pdf.numPages; i++) {
+                                const page = await pdf.getPage(i);
+                                const textContent = await page.getTextContent();
+                                const pageText = textContent.items.map(item => item.str).join(' ');
+                                extractedText += pageText + "\n\n";
+                            }
 
-                    readerText.innerText = fullText.trim();
-                    sentences = fullText.match(/[^.!?\n]+[.!?\n]+/g) || [fullText];
-                    currentSentenceIdx = 0;
-                    trackStatus.innerText = `PDF extrait (${pdf.numPages} pages) • Tape sur Play pour écouter au volant !`;
-                    playSpeechFrom(0);
+                            if (!extractedText.trim()) {
+                                throw new Error("Le PDF ne contient pas de texte lisible (il s'agit peut-être d'une image numérisée sans OCR).");
+                            }
+
+                            readerText.innerText = extractedText.trim();
+                            prepareText(extractedText);
+                            trackStatus.innerText = `✅ PDF extrait (${pdf.numPages} pages) ! Appuie sur ▶ PLAY`;
+                            btnPlay.classList.add('pulse-play');
+                        } catch (err) {
+                            alert("Erreur extraction PDF: " + err.message);
+                            trackStatus.innerText = "❌ Erreur extraction. Utilise l'option copier-coller ci-dessous.";
+                        }
+                    };
+                    reader.readAsArrayBuffer(file);
                 } catch (err) {
-                    alert("Erreur lecture PDF: " + err.message);
+                    alert("Impossible d'ouvrir le fichier: " + err.message);
                 }
             } else {
-                const text = await file.text();
-                readerText.innerText = text.trim();
-                sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
-                currentSentenceIdx = 0;
-                trackStatus.innerText = "Fichier texte chargé • Prêt !";
-                playSpeechFrom(0);
+                // Text file
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const text = this.result;
+                    readerText.innerText = text.trim();
+                    prepareText(text);
+                    trackStatus.innerText = `✅ Fichier texte chargé ! Appuie sur ▶ PLAY`;
+                    btnPlay.classList.add('pulse-play');
+                };
+                reader.readAsText(file);
             }
+        });
+
+        // PASTE BUTTON HANDLER
+        btnLoadPaste.addEventListener('click', () => {
+            const val = pasteInput.value.trim();
+            if (!val) {
+                alert("Colle d'abord du texte dans la boîte !");
+                return;
+            }
+            stopAudio();
+            trackCategory.innerText = "TEXTE COLLÉ";
+            trackTitle.innerText = "Révision Personnalisée";
+            readerText.innerText = val;
+            prepareText(val);
+            trackStatus.innerText = `✅ Texte chargé (${sentences.length} phrases) ! Lecture immédiate...`;
+            isSpeaking = true;
+            speakCurrentSentence();
         });
 
         // Initialize with Module 0
