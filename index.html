@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#0b0f19">
     <title>GRC Drive Audio — Révision Vocale iPhone & Voiture</title>
 
-    <!-- PDF.JS VIA JSDELIVR (HIGH RELIABILITY ON IOS SAFARI) -->
+    <!-- PDF.JS VIA JSDELIVR (OPTIMISÉ POUR SAFARI IOS) -->
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 
     <style>
@@ -72,7 +72,7 @@
             gap: 14px;
         }
 
-        /* BIG DRIVING CARD */
+        /* CARTE LECTEUR VOITURE */
         .player-card {
             background-color: var(--card-bg);
             border: 2px solid #1e3a8a;
@@ -109,7 +109,7 @@
             min-height: 20px;
         }
 
-        /* BIG TACTILE CONTROLS FOR CAR */
+        /* GROS BOUTONS POUR LA CONDUITE */
         .controls-row {
             display: flex;
             align-items: center;
@@ -163,7 +163,6 @@
             100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6); transform: scale(1); }
         }
 
-        /* SPEED BUTTONS */
         .sub-controls {
             display: flex;
             gap: 8px;
@@ -189,7 +188,6 @@
             color: white;
         }
 
-        /* SECTION CARDS */
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -205,7 +203,7 @@
             gap: 8px;
         }
 
-        /* ACCESSIBLE UPLOAD BUTTON FOR IOS */
+        /* BOUTON D'UPLOAD NATIF IOS */
         .upload-label {
             display: flex;
             flex-direction: column;
@@ -237,12 +235,10 @@
             margin-top: 4px;
         }
 
-        /* Hidden standard file input linked directly to label */
         #pdfInput {
             display: none;
         }
 
-        /* PASTE TEXT OPTION */
         .paste-box {
             width: 100%;
             height: 90px;
@@ -269,7 +265,6 @@
             cursor: pointer;
         }
 
-        /* PLAYLIST ITEMS */
         .playlist {
             display: flex;
             flex-direction: column;
@@ -303,7 +298,6 @@
             margin-top: 2px;
         }
 
-        /* READER BOX */
         .reader-box {
             background: #0f172a;
             border: 1px solid #1e293b;
@@ -335,20 +329,18 @@
 
     <div class="container">
         
-        <!-- MAIN CAR DRIVING CARD -->
+        <!-- CARTE LECTEUR VOITURE -->
         <div class="player-card">
             <div class="now-playing-label" id="trackCategory">MODULE SÉLECTIONNÉ</div>
             <div class="track-title" id="trackTitle">1. Random Bit — Entretien Medicaid & CMS</div>
             <div class="track-status" id="trackStatus">Prêt • Appuie sur le gros bouton ▶ PLAY</div>
 
-            <!-- BIG BUTTONS -->
             <div class="controls-row">
                 <button class="btn-circle btn-skip" id="btnPrev" title="Reculer 15s">⏮ 15s</button>
                 <button class="btn-circle btn-play-big pulse-play" id="btnPlay" title="Lecture / Pause">▶</button>
                 <button class="btn-circle btn-skip" id="btnNext" title="Avancer 15s">15s ⏭</button>
             </div>
 
-            <!-- SPEED & LANGUAGE -->
             <div class="sub-controls">
                 <button class="pill-btn active" id="spd1">1.0x</button>
                 <button class="pill-btn" id="spd12">1.25x</button>
@@ -357,11 +349,10 @@
             </div>
         </div>
 
-        <!-- UPLOAD SECTION WITH NATIVE IOS LABEL -->
+        <!-- SECTION UPLOAD PDF AVEC LABEL NATIF APPLE -->
         <div class="card">
             <h2>📂 Lire un PDF depuis ton iPhone</h2>
             
-            <!-- Standard native label that triggers iOS file sheet reliably -->
             <label for="pdfInput" class="upload-label" id="uploadLabel">
                 <span style="font-size: 2.2rem;">📄</span>
                 <strong>Appuie ici pour choisir un PDF</strong>
@@ -369,7 +360,6 @@
             </label>
             <input type="file" id="pdfInput" accept="application/pdf, text/plain">
 
-            <!-- FAST PASTE BACKUP OPTION -->
             <div style="margin-top: 14px;">
                 <p style="font-size: 0.8rem; color: var(--text-sub); margin-bottom: 4px;">Ou colle directement du texte :</p>
                 <textarea class="paste-box" id="pasteInput" placeholder="Colle ici un texte ou des questions d'entretien..."></textarea>
@@ -377,7 +367,7 @@
             </div>
         </div>
 
-        <!-- BUILT-IN PLAYLIST -->
+        <!-- MODULES PRÉ-CHARGÉS -->
         <div class="card">
             <h2>🎧 Modules de Révision Intégrés (1 Clic)</h2>
             <div class="playlist" id="playlistContainer">
@@ -412,7 +402,7 @@
             </div>
         </div>
 
-        <!-- TEXT VIEWER -->
+        <!-- APERÇU DU TEXTE -->
         <div class="card">
             <h2>📖 Texte en cours de lecture</h2>
             <div class="reader-box" id="readerText">
@@ -422,21 +412,15 @@
 
     </div>
 
-    <!-- AUDIO FOR EPISODE 1 (WITH SAFE SPEECH FALLBACK) -->
-    <audio id="nativeAudio" src="episode1.m4a" preload="none"></audio>
-
     <footer>
         Conçu pour Moussa Toure • Déployé sur GitHub Pages / Vercel • Compatible CarPlay
     </footer>
 
-    <!-- LOGIC -->
     <script>
-        // Set up PDF.js worker
         if (window.pdfjsLib) {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
         }
 
-        // PRESET MODULES
         const modules = [
             {
                 title: "Random Bit — Entretien Medicaid & CMS",
@@ -490,14 +474,12 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             }
         ];
 
-        // SPEECH ENGINE WITH CHUNKED PLAYBACK FOR IOS SAFARI RELIABILITY
         const synth = window.speechSynthesis;
         let isSpeaking = false;
         let sentences = [];
         let sentenceIndex = 0;
         let playbackRate = 1.0;
 
-        // UI ELEMENTS
         const btnPlay = document.getElementById('btnPlay');
         const btnPrev = document.getElementById('btnPrev');
         const btnNext = document.getElementById('btnNext');
@@ -510,7 +492,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
         const pasteInput = document.getElementById('pasteInput');
         const btnLoadPaste = document.getElementById('btnLoadPaste');
 
-        // LOAD PRESET MODULE
         function loadModule(idx) {
             stopAudio();
             const mod = modules[idx];
@@ -528,17 +509,15 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             prepareText(mod.text);
         }
 
-        // PREPARE SENTENCES (Chunking prevents iOS Safari 15-second speech cutoff)
         function prepareText(rawText) {
             sentences = rawText.match(/[^.!?\n]+[.!?\n]+/g) || [rawText];
             sentences = sentences.map(s => s.trim()).filter(s => s.length > 0);
             sentenceIndex = 0;
         }
 
-        // SPEAK NEXT SENTENCE
         function speakCurrentSentence() {
             if (!synth) {
-                alert("La synthèse vocale n'est pas supportée par ce navigateur.");
+                alert("La synthèse vocale n'est pas supportée.");
                 return;
             }
 
@@ -557,7 +536,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             const utter = new SpeechSynthesisUtterance(text);
             utter.rate = playbackRate;
 
-            // Auto-detect language
             if (/[a-zA-Z]{4,}/.test(text) && (text.includes("Question") || text.includes("Answer") || text.includes("the") || text.includes("framework"))) {
                 utter.lang = "en-US";
             } else {
@@ -591,7 +569,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             synth.speak(utter);
         }
 
-        // TOGGLE PLAY / PAUSE
         function togglePlay() {
             if (isSpeaking) {
                 isSpeaking = false;
@@ -632,7 +609,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             }
         });
 
-        // SPEED BUTTONS
         const spdBtns = [
             { btn: document.getElementById('spd1'), val: 1.0 },
             { btn: document.getElementById('spd12'), val: 1.25 },
@@ -650,7 +626,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             });
         });
 
-        // ROBUST PDF INPUT CHANGE HANDLER
         pdfInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -660,7 +635,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             trackTitle.innerText = file.name;
             trackStatus.innerText = "⏳ Extraction du texte en cours...";
 
-            // Check if PDF
             if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
                 try {
                     const reader = new FileReader();
@@ -678,7 +652,7 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
                             }
 
                             if (!extractedText.trim()) {
-                                throw new Error("Le PDF ne contient pas de texte lisible (il s'agit peut-être d'une image numérisée sans OCR).");
+                                throw new Error("Le PDF ne contient pas de texte lisible.");
                             }
 
                             readerText.innerText = extractedText.trim();
@@ -695,7 +669,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
                     alert("Impossible d'ouvrir le fichier: " + err.message);
                 }
             } else {
-                // Text file
                 const reader = new FileReader();
                 reader.onload = function() {
                     const text = this.result;
@@ -708,7 +681,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             }
         });
 
-        // PASTE BUTTON HANDLER
         btnLoadPaste.addEventListener('click', () => {
             const val = pasteInput.value.trim();
             if (!val) {
@@ -725,7 +697,6 @@ Formation juridique: Exploitation des études de droit pour interpréter les bul
             speakCurrentSentence();
         });
 
-        // Initialize with Module 0
         loadModule(0);
     </script>
 </body>
