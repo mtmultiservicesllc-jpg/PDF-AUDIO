@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="GRC Drive">
+    <meta name="apple-mobile-web-app-title" content="PDF-AUDIO">
     <meta name="theme-color" content="#0b0f19">
-    <title>GRC Drive Audio — Hands-Free English Voice Reader</title>
+    <title>PDF-AUDIO — English Driving Reader</title>
 
-    <!-- PDF.JS VIA JSDELIVR -->
+    <!-- PDF.JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 
     <style>
@@ -20,6 +20,7 @@
             --accent-cyan: #06b6d4;
             --accent-green: #10b981;
             --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
             --text-main: #f8fafc;
             --text-sub: #94a3b8;
             --border-color: #1e293b;
@@ -39,7 +40,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 14px;
+            padding: 12px;
             padding-bottom: 50px;
         }
 
@@ -70,56 +71,108 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
 
-        /* SELECTEUR DE LANGUE */
-        .lang-banner {
+        /* IPHONE HARDWARE ALERT BANNER */
+        .alert-banner {
+            background: rgba(245, 158, 11, 0.15);
+            border: 2px solid var(--accent-orange);
+            border-radius: 14px;
+            padding: 12px 14px;
+            font-size: 0.84rem;
+            line-height: 1.45;
+            color: #fef3c7;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-banner strong {
+            color: #fbbf24;
+        }
+
+        /* SOUND TEST & VOICE BAR */
+        .voice-bar {
             background: #1e293b;
             border: 1px solid #334155;
             border-radius: 14px;
-            padding: 10px 14px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .voice-bar-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .lang-label {
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #93c5fd;
-        }
-
-        .lang-toggle-group {
+        .lang-toggle {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
-        .lang-btn {
+        .btn-lang {
             background: #0f172a;
             color: var(--text-sub);
             border: 1px solid #334155;
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .lang-btn.active {
+        .btn-lang.active {
             background: var(--accent-blue);
             color: white;
             border-color: #60a5fa;
-            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
         }
 
+        .btn-test-sound {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .voice-select-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        .voice-select {
+            flex: 1;
+            background: #0f172a;
+            color: white;
+            border: 1px solid #475569;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        /* MAIN CAR PLAYER CARD */
         .player-card {
             background-color: var(--card-bg);
             border: 2px solid #1e3a8a;
             border-radius: 24px;
             padding: 20px 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -131,25 +184,26 @@
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--accent-cyan);
-            font-weight: 700;
+            font-weight: 800;
             margin-bottom: 4px;
         }
 
         .track-title {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             line-height: 1.3;
         }
 
         .track-status {
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: var(--accent-green);
             font-weight: 600;
             margin-bottom: 16px;
-            min-height: 20px;
+            min-height: 22px;
         }
 
+        /* BIG CAR BUTTONS */
         .controls-row {
             display: flex;
             align-items: center;
@@ -181,12 +235,12 @@
         .btn-skip {
             width: 62px;
             height: 62px;
-            font-size: 1.05rem;
+            font-size: 1.0rem;
         }
 
         .btn-play-big {
-            width: 92px;
-            height: 92px;
+            width: 90px;
+            height: 90px;
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
             border: 3px solid #60a5fa;
             font-size: 2.2rem;
@@ -243,6 +297,7 @@
             gap: 8px;
         }
 
+        /* NATIVE IOS UPLOAD BUTTON */
         .upload-label {
             display: flex;
             flex-direction: column;
@@ -280,7 +335,7 @@
 
         .paste-box {
             width: 100%;
-            height: 90px;
+            height: 85px;
             background: #0f172a;
             border: 1px solid #334155;
             border-radius: 10px;
@@ -288,7 +343,7 @@
             color: white;
             font-size: 0.85rem;
             resize: none;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .btn-load-text {
@@ -329,12 +384,24 @@
         .playlist-title {
             font-weight: 600;
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .playlist-desc {
             font-size: 0.75rem;
             color: var(--text-sub);
             margin-top: 2px;
+        }
+
+        .badge-tag {
+            background: #2563eb;
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: 700;
         }
 
         .reader-box {
@@ -362,26 +429,47 @@
 <body>
 
     <header>
-        <h1>🚗 GRC Drive Audio Player</h1>
-        <p>Hands-Free Audio Study App • Optimized for iPhone, CarPlay & Bluetooth</p>
+        <h1>🚗 PDF-AUDIO Player</h1>
+        <p>Hands-Free English Audio Reader • 100% Reliable on iPhone & CarPlay</p>
     </header>
 
     <div class="container">
 
-        <!-- BOUTONS SELECTION LANGUE -->
-        <div class="lang-banner">
-            <span class="lang-label">🗣️ Voice Language:</span>
-            <div class="lang-toggle-group">
-                <button class="lang-btn active" id="btnLangEn">🇺🇸 English (US)</button>
-                <button class="lang-btn" id="btnLangFr">🇫🇷 French</button>
+        <!-- IPHONE SILENT SWITCH ALERT -->
+        <div class="alert-banner" id="bannerSilence">
+            <span style="font-size: 1.6rem;">🔔</span>
+            <div>
+                <strong>IPHONE : Pas de son ? Vérifie ceci impérativement :</strong><br>
+                1. <strong>Bouton silencieux / vibreur</strong> sur la tranche gauche de ton iPhone : pousse-le vers l'écran (le trait <span style="color:#ef4444; font-weight:bold;">orange</span> ne doit <u>PAS</u> être visible !).<br>
+                2. <strong>Monte le volume</strong> avec les boutons <strong>+</strong> sur le côté gauche.<br>
+                3. Clique sur <strong>🔊 TEST DU SON</strong> ci-dessous pour tester.
             </div>
         </div>
-        
-        <!-- CARTE DE CONDUITE -->
+
+        <!-- VOICE & SOUND TEST BAR -->
+        <div class="voice-bar">
+            <div class="voice-bar-row">
+                <div class="lang-toggle">
+                    <button class="btn-lang active" id="btnLangEn" onclick="switchLanguage('en-US')">🇺🇸 English</button>
+                    <button class="btn-lang" id="btnLangFr" onclick="switchLanguage('fr-FR')">🇫🇷 Français</button>
+                </div>
+                <button class="btn-test-sound" id="btnTestSound" onclick="testAudioSound()">
+                    <span>🔊</span> TEST DU SON
+                </button>
+            </div>
+            <div class="voice-select-row">
+                <label for="voiceSelect">Voix :</label>
+                <select id="voiceSelect" class="voice-select" onchange="onVoiceChanged()">
+                    <option value="">Chargement des voix iPhone...</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- MAIN CAR DRIVING CARD -->
         <div class="player-card">
-            <div class="now-playing-label" id="trackCategory">SELECTED MODULE (ENGLISH US VOICE)</div>
-            <div class="track-title" id="trackTitle">1. Random Bit — Medicaid & CMS Interview Prep</div>
-            <div class="track-status" id="trackStatus">Ready • Tap ▶ PLAY to listen in English</div>
+            <div class="now-playing-label" id="trackCategory">MODULE 1 • ENGLISH REVIEW</div>
+            <div class="track-title" id="trackTitle">Random Bit — Medicaid GRC Mock Interview</div>
+            <div class="track-status" id="trackStatus">Ready • Tap the big ▶ PLAY button</div>
 
             <div class="controls-row">
                 <button class="btn-circle btn-skip" id="btnPrev" title="Back 15s">⏮ 15s</button>
@@ -397,9 +485,9 @@
             </div>
         </div>
 
-        <!-- UPLOAD PDF -->
+        <!-- UPLOAD CUSTOM PDF -->
         <div class="card">
-            <h2>📂 Read Any English PDF From Your iPhone</h2>
+            <h2>📂 Read Any English PDF or Paste Text</h2>
             
             <label for="pdfInput" class="upload-label" id="uploadLabel">
                 <span style="font-size: 2.2rem;">📄</span>
@@ -415,34 +503,46 @@
             </div>
         </div>
 
-        <!-- MODULES EN ANGLAIS PUR -->
+        <!-- PRE-LOADED GRC MODULES -->
         <div class="card">
             <h2>🎧 Pre-Loaded GRC Study Modules</h2>
             <div class="playlist" id="playlistContainer">
                 <div class="playlist-item active" onclick="loadModule(0)">
                     <div>
-                        <div class="playlist-title">1. Random Bit — Medicaid GRC Mock Interview</div>
-                        <div class="playlist-desc">CMS ARC-AMPE, HITRUST r2, and objective evidence (4 Questions)</div>
+                        <div class="playlist-title">
+                            1. Random Bit — Medicaid GRC Mock Interview
+                            <span class="badge-tag">CMS & HITRUST</span>
+                        </div>
+                        <div class="playlist-desc">4 full interview questions & answers on crosswalks & evidence</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(1)">
                     <div>
-                        <div class="playlist-title">2. Maestro Search — Pre-Sales Scoping & CMMC 2.0</div>
-                        <div class="playlist-desc">SOW authoring, penetration test scoping & LOE ($60-$90/hr)</div>
+                        <div class="playlist-title">
+                            2. Meriplex — Cybersecurity Analyst
+                            <span class="badge-tag">MDR & SOC</span>
+                        </div>
+                        <div class="playlist-desc">Incident triage, Tier 2 escalation, proxies & compliance audits</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(2)">
                     <div>
-                        <div class="playlist-title">3. Brooksource — NIST SP 800-171 & TSA 23-01</div>
-                        <div class="playlist-desc">System Security Plans (SSPs), CAPs & Aviation Compliance ($45/hr)</div>
+                        <div class="playlist-title">
+                            3. Maestro Search — Pre-Sales Scoping & CMMC 2.0
+                            <span class="badge-tag">CONSULTING</span>
+                        </div>
+                        <div class="playlist-desc">SOW authoring, penetration test scoping & LOE ($60-$90/hr)</div>
                     </div>
                     <span>▶</span>
                 </div>
                 <div class="playlist-item" onclick="loadModule(3)">
                     <div>
-                        <div class="playlist-title">4. RemoteHunter — Fintech, GLBA & SOC 2 Type II</div>
+                        <div class="playlist-title">
+                            4. RemoteHunter — Fintech, GLBA & SOC 2 Type II
+                            <span class="badge-tag">FINTECH</span>
+                        </div>
                         <div class="playlist-desc">Banking regulations, FFIEC guidelines & AI Governance ($72K-$90K)</div>
                     </div>
                     <span>▶</span>
@@ -450,18 +550,18 @@
             </div>
         </div>
 
-        <!-- ZONE TEXTE -->
+        <!-- TEXT VIEWER -->
         <div class="card">
             <h2>📖 Current Reading Text</h2>
             <div class="reader-box" id="readerText">
-                Select a module above or upload an English PDF to begin listening.
+                Loading text...
             </div>
         </div>
 
     </div>
 
     <footer>
-        Designed for Moussa Toure • Deployed on GitHub Pages / Vercel • 100% CarPlay & Bluetooth Compatible
+        Designed for Moussa Toure • Deployed on GitHub Pages • 100% CarPlay & Bluetooth Compatible
     </footer>
 
     <script>
@@ -472,7 +572,7 @@
         const modules = [
             {
                 title: "Random Bit — Medicaid GRC Mock Interview",
-                category: "MEDICAID GRC MOCK INTERVIEW",
+                category: "MODULE 1 • MEDICAID GRC",
                 text: `Welcome Moussa to your Medicaid Governance and Compliance review session for Random Bit.
 
 Question 1: How would you approach designing a control crosswalk mapping CMS ARC-AMPE and HITRUST r2 requirements with NIST CSF to ensure traceability?
@@ -488,28 +588,28 @@ Question 4: How would you ensure lessons learned from this rejected artifact are
 Answer: I execute a closed-loop Lessons Learned Protocol: First, conduct a blameless root cause analysis within five days. Second, update the specific Evidence Runbook with exact CLI commands, data schemas, and a visual gold standard example. Third, harden the pre-submission Quality Assurance gate requiring verification that artifacts contain raw transaction records. Fourth, automate extraction scripts into scheduled pipelines. Fifth, flag the control as a High Scrutiny Item in our GRC register, ensuring it is automatically tested during next quarter's internal mock audit.`
             },
             {
-                title: "Maestro Search — Scoping & CMMC 2.0",
-                category: "PRE-SALES & GRC CONSULTING ($60-$90/HR)",
+                title: "Meriplex — Cybersecurity Analyst",
+                category: "MODULE 2 • INCIDENT TRIAGE & MDR",
+                text: `Review session for Meriplex Solutions Cybersecurity Analyst position.
+Core operational responsibilities:
+Incident Management & Workflow: Continuously monitor security alerts across Managed Detection and Response tools, analyzing telemetry, determining threat severity, and initiating incident response procedures.
+Ticket Triage & Tier 2 Escalation: Perform detailed triage on security tickets. For complex or high-severity incidents, forward promptly to Tier 2 analysts with clear technical documentation and contextual logs to minimize mean time to remediate.
+Shift Reporting & Audit Documentation: Maintain comprehensive records of triage activities, generate shift handover summaries, and contribute to post-incident reporting to support regulatory compliance audits.
+Security Appliance Support: Provide operational support and troubleshooting for agent-based MDR solutions, proxy servers, and web content filtering tools across Windows, Mac, and Linux environments.
+Technical Skills: Practical scripting in Bash, PowerShell, and Python, coupled with log analysis using KQL and SIEM platforms.`
+            },
+            {
+                title: "Maestro Search — Pre-Sales Scoping & CMMC 2.0",
+                category: "MODULE 3 • GRC CONSULTING",
                 text: `Review session for Maestro Search Information Security Consultant position.
 Key consulting competencies:
-Scope of Work Authoring: Translating client technical infrastructure, regulatory compliance mandates, and cyber insurance requirements into well-defined Scopes of Work with realistic Level of Effort estimations.
-CMMC 2.0 Level 2 and NIST SP 800-171: Scoping assessment boundaries for defense subcontractors handling Controlled Unclassified Information, calculating DoD SPRS scores, and building System Security Plans and POA and M milestones.
-Penetration Testing Calibration: Defining target IP ranges, web application complexity, API endpoints, and testing rules of engagement to estimate consultant hours accurately.
-Consultant Handovers: Providing delivery teams and penetration testers with complete asset inventories and evidentiary expectations to eliminate delivery friction.`
+Scope of Work Authoring: Translating client technical infrastructure, regulatory compliance mandates, and cyber insurance requirements into well-defined, defensible Statements of Work.
+Compliance Frameworks: Scoping and implementing CMMC 2.0 Level 2 controls, ISO 27001 ISMS policies, SOC 2 Type II controls, and NIST SP 800-171 requirements for enterprise defense contractors.
+Penetration Testing Scoping: Defining scope boundaries, target IP ranges, API endpoints, testing methodologies, and Level of Effort estimations for external penetration tests and vulnerability assessments.`
             },
             {
-                title: "Brooksource — NIST SP 800-171 & TSA 23-01",
-                category: "AVIATION FORTUNE 500 ($45/HR)",
-                text: `Review session for Brooksource Fortune 500 Information Security Compliance Analyst role in Atlanta.
-Core audit and compliance focus:
-NIST SP 800-171 and System Security Plans: Authoring and updating comprehensive SSP documentation, system boundaries, and network architectures across all 110 requirements.
-TSA Joint Emergency Amendment 23-01: Assessing aviation and critical transportation infrastructure controls, verifying network segmentation between operational and corporate networks.
-Corrective Action Plans: Tracking audit findings, deficiency remediations, and milestones through verified closure.
-IT Audits and Control Testing: Performing testing of design and testing of operating effectiveness across privileged access logs, multi-factor authentication, and firewall rule configurations.`
-            },
-            {
-                title: "RemoteHunter — Fintech & SOC 2 Type II",
-                category: "DIGITAL BANKING PLATFORM ($72K-$90K)",
+                title: "RemoteHunter — Fintech, GLBA & SOC 2 Type II",
+                category: "MODULE 4 • FINTECH & AI GOVERNANCE",
                 text: `Review session for RemoteHunter Compliance Specialist role supporting a leading digital banking platform for U.S. banks and credit unions.
 Core responsibilities:
 Financial Regulations: Operationalizing GLBA Safeguards Rule, FFIEC IT Examination Handbook guidelines, and PCI DSS 4.0 requirements.
@@ -519,20 +619,20 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
             }
         ];
 
-        const synth = window.speechSynthesis;
-        let isSpeaking = false;
+        let synth = window.speechSynthesis;
+        let isPlaying = false;
         let sentences = [];
         let sentenceIndex = 0;
         let playbackRate = 1.0;
-        let voices = [];
-        let currentLang = "en-US"; // DEFAUT ANGLAIS US STRICT
+        let currentLang = "en-US";
+        let availableVoices = [];
+        let selectedVoice = null;
+        let activeModuleIndex = 0;
 
         const btnPlay = document.getElementById('btnPlay');
         const btnPrev = document.getElementById('btnPrev');
         const btnNext = document.getElementById('btnNext');
         const btnStop = document.getElementById('btnStop');
-        const btnLangEn = document.getElementById('btnLangEn');
-        const btnLangFr = document.getElementById('btnLangFr');
         const trackTitle = document.getElementById('trackTitle');
         const trackCategory = document.getElementById('trackCategory');
         const trackStatus = document.getElementById('trackStatus');
@@ -540,63 +640,146 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
         const pdfInput = document.getElementById('pdfInput');
         const pasteInput = document.getElementById('pasteInput');
         const btnLoadPaste = document.getElementById('btnLoadPaste');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const btnLangEn = document.getElementById('btnLangEn');
+        const btnLangFr = document.getElementById('btnLangFr');
 
-        function populateVoices() {
-            if (synth) {
-                voices = synth.getVoices();
-            }
-        }
-        populateVoices();
-        if (synth && synth.onvoiceschanged !== undefined) {
-            synth.onvoiceschanged = populateVoices;
-        }
-
-        function unlockIOSAudio() {
+        // UNLOCK AUDIO ENGINE (Plays clean Web Audio beep)
+        function unlockAudioEngine() {
             try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (AudioCtx) {
-                    const ctx = new AudioCtx();
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    const ctx = new AudioContext();
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-                    gain.gain.value = 0.001;
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                    osc.frequency.setValueAtTime(880.00, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
                     osc.connect(gain);
                     gain.connect(ctx.destination);
-                    osc.start(0);
-                    osc.stop(0.05);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.3);
                 }
             } catch (e) {
-                console.log("AudioContext unlock", e);
+                console.log("Audio unlock:", e);
+            }
+            if (synth && synth.paused) {
+                synth.resume();
             }
         }
 
-        btnLangEn.addEventListener('click', () => {
-            currentLang = "en-US";
-            btnLangEn.classList.add('active');
-            btnLangFr.classList.remove('active');
-            trackCategory.innerText = "ENGLISH (US) VOICE ACTIVE";
-            if (isSpeaking) {
+        // LOAD VOICES WITH RETRY FOR IOS
+        function loadVoices() {
+            if (!synth) return;
+            const voices = synth.getVoices() || [];
+            if (voices.length > 0) {
+                availableVoices = voices;
+                populateVoiceSelect();
+            }
+        }
+
+        function populateVoiceSelect() {
+            voiceSelect.innerHTML = "";
+            const isEn = currentLang.startsWith("en");
+            const langPrefix = isEn ? "en" : "fr";
+            const filtered = availableVoices.filter(v => v.lang.toLowerCase().startsWith(langPrefix));
+
+            if (filtered.length === 0) {
+                const opt = document.createElement("option");
+                opt.value = "";
+                opt.innerText = isEn ? "Native English (iOS Default)" : "Français (Défaut)";
+                voiceSelect.appendChild(opt);
+                selectedVoice = null;
+                return;
+            }
+
+            let bestIndex = 0;
+            filtered.forEach((v, idx) => {
+                const opt = document.createElement("option");
+                opt.value = v.name;
+                const isSamantha = v.name.toLowerCase().includes("samantha");
+                const isAlex = v.name.toLowerCase().includes("alex");
+                const isThomas = v.name.toLowerCase().includes("thomas");
+
+                opt.innerText = `${v.name} (${v.lang})${isSamantha || isThomas ? ' ⭐' : ''}`;
+                voiceSelect.appendChild(opt);
+
+                if (isEn && isSamantha) bestIndex = idx;
+                else if (!isEn && isThomas) bestIndex = idx;
+            });
+
+            voiceSelect.selectedIndex = bestIndex;
+            selectedVoice = filtered[bestIndex];
+        }
+
+        function onVoiceChanged() {
+            const val = voiceSelect.value;
+            selectedVoice = availableVoices.find(v => v.name === val) || null;
+            trackStatus.innerText = `Voix sélectionnée : ${selectedVoice ? selectedVoice.name : "Défaut"}`;
+        }
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            if (lang.startsWith("en")) {
+                btnLangEn.classList.add("active");
+                btnLangFr.classList.remove("active");
+            } else {
+                btnLangFr.classList.add("active");
+                btnLangEn.classList.remove("active");
+            }
+            populateVoiceSelect();
+            trackStatus.innerText = `Langue : ${lang.startsWith("en") ? "🇺🇸 English (US)" : "🇫🇷 Français"}`;
+            if (isPlaying) {
+                stopAll();
                 speakCurrentSentence();
             }
-        });
+        }
 
-        btnLangFr.addEventListener('click', () => {
-            currentLang = "fr-FR";
-            btnLangFr.classList.add('active');
-            btnLangEn.classList.remove('active');
-            trackCategory.innerText = "VOIX FRANÇAISE ACTIVE";
-            if (isSpeaking) {
-                speakCurrentSentence();
+        // ONE-TAP SOUND TEST
+        function testAudioSound() {
+            unlockAudioEngine();
+            if (!synth) {
+                alert("Speech synthesis is not supported in this browser.");
+                return;
             }
-        });
+            synth.cancel();
 
+            const testText = currentLang.startsWith("en")
+                ? "Hello Moussa! English audio is working perfectly. You are ready to listen in your car."
+                : "Bonjour Moussa ! Le son fonctionne parfaitement sur votre iPhone.";
+
+            const utter = new SpeechSynthesisUtterance(testText);
+            utter.lang = currentLang;
+            if (selectedVoice) utter.voice = selectedVoice;
+            utter.rate = 1.0;
+            utter.pitch = 1.0;
+            utter.volume = 1.0;
+
+            utter.onstart = () => {
+                trackStatus.innerText = "🔊 Son en cours de test... Tu dois entendre la voix !";
+            };
+
+            utter.onend = () => {
+                trackStatus.innerText = "✅ Test réussi ! Le son fonctionne.";
+            };
+
+            utter.onerror = (e) => {
+                trackStatus.innerText = "⚠️ Erreur test audio : vérifie le bouton vibreur de ton iPhone !";
+            };
+
+            synth.speak(utter);
+        }
+
+        // LOAD GRC MODULE
         function loadModule(idx) {
-            stopAudio();
+            stopAll();
+            activeModuleIndex = idx;
             const mod = modules[idx];
             trackTitle.innerText = mod.title;
-            trackCategory.innerText = mod.category + " (ENGLISH US VOICE)";
+            trackCategory.innerText = mod.category;
             readerText.innerText = mod.text;
-            trackStatus.innerText = "Module loaded • Tap ▶ PLAY to listen in English";
-            btnPlay.classList.add('pulse-play');
 
             document.querySelectorAll('.playlist-item').forEach((el, i) => {
                 if (i === idx) el.classList.add('active');
@@ -604,14 +787,38 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
             });
 
             prepareText(mod.text);
+            trackStatus.innerText = `Ready • Tap ▶ PLAY for English Review`;
+            btnPlay.classList.add('pulse-play');
         }
 
+        // CHUNKING: Split into clean, short sentences to prevent iOS 15s freeze
         function prepareText(rawText) {
-            sentences = rawText.match(/[^.!?\n]+[.!?\n]+/g) || [rawText];
-            sentences = sentences.map(s => s.trim()).filter(s => s.length > 0);
+            const rawSentences = rawText.match(/[^.!?\n]+[.!?\n]+/g) || [rawText];
+            sentences = [];
+            rawSentences.forEach(s => {
+                const trimmed = s.trim();
+                if (trimmed.length > 0) {
+                    if (trimmed.length > 180) {
+                        const subParts = trimmed.split(/,\s+/);
+                        let buf = "";
+                        subParts.forEach(p => {
+                            if ((buf + ", " + p).length < 180) {
+                                buf = buf ? buf + ", " + p : p;
+                            } else {
+                                if (buf) sentences.push(buf);
+                                buf = p;
+                            }
+                        });
+                        if (buf) sentences.push(buf);
+                    } else {
+                        sentences.push(trimmed);
+                    }
+                }
+            });
             sentenceIndex = 0;
         }
 
+        // SPEAK CURRENT SENTENCE IN VERIFIED ENGLISH
         function speakCurrentSentence() {
             if (!synth) {
                 alert("Speech synthesis is not supported on this browser.");
@@ -619,58 +826,51 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
             }
 
             if (sentenceIndex >= sentences.length) {
-                isSpeaking = false;
+                isPlaying = false;
                 btnPlay.innerText = "▶";
                 btnPlay.classList.remove('pulse-play');
-                trackStatus.innerText = "✅ Session finished! Tap Play to replay";
+                trackStatus.innerText = "✅ Finished reading! Tap Play to replay";
                 sentenceIndex = 0;
                 return;
             }
 
-            synth.cancel();
+            if (synth.paused) {
+                synth.resume();
+            }
 
             const text = sentences[sentenceIndex];
             const utter = new SpeechSynthesisUtterance(text);
-            utter.volume = 1.0;
+            
+            utter.lang = currentLang;
+            if (selectedVoice) {
+                utter.voice = selectedVoice;
+            }
             utter.rate = playbackRate;
             utter.pitch = 1.0;
-
-            populateVoices();
-
-            // FORCE ANGLAIS US NATUREL
-            if (currentLang === "en-US") {
-                utter.lang = "en-US";
-                const enVoice = voices.find(v => v.lang === "en-US" && (v.name.includes("Samantha") || v.name.includes("Ava") || v.name.includes("Alex") || v.name.includes("Siri") || v.name.includes("Allison"))) ||
-                                voices.find(v => v.lang === "en-US") ||
-                                voices.find(v => v.lang && v.lang.startsWith("en"));
-                if (enVoice) utter.voice = enVoice;
-            } else {
-                utter.lang = "fr-FR";
-                const frVoice = voices.find(v => v.lang === "fr-FR" || v.lang.startsWith("fr"));
-                if (frVoice) utter.voice = frVoice;
-            }
+            utter.volume = 1.0;
 
             utter.onstart = () => {
-                isSpeaking = true;
+                isPlaying = true;
                 btnPlay.innerText = "⏸";
                 btnPlay.classList.remove('pulse-play');
-                trackStatus.innerText = `Reading in English (${sentenceIndex + 1}/${sentences.length})... 🚗🔊`;
+                const voiceName = selectedVoice ? selectedVoice.name : "Native";
+                trackStatus.innerText = `Speaking (${sentenceIndex + 1}/${sentences.length}) • ${voiceName} 🚗🔊`;
             };
 
             utter.onend = () => {
                 sentenceIndex++;
-                if (isSpeaking) {
-                    speakCurrentSentence();
+                if (isPlaying) {
+                    setTimeout(speakCurrentSentence, 60);
                 }
             };
 
             utter.onerror = (e) => {
-                console.log("Speech error:", e);
+                console.log("Speech error, advancing:", e);
                 sentenceIndex++;
-                if (isSpeaking && sentenceIndex < sentences.length) {
-                    speakCurrentSentence();
+                if (isPlaying && sentenceIndex < sentences.length) {
+                    setTimeout(speakCurrentSentence, 60);
                 } else {
-                    stopAudio();
+                    stopAll();
                 }
             };
 
@@ -678,48 +878,54 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
         }
 
         function togglePlay() {
-            unlockIOSAudio();
-            if (isSpeaking) {
-                isSpeaking = false;
-                synth.cancel();
+            unlockAudioEngine();
+            if (isPlaying) {
+                isPlaying = false;
+                if (synth) synth.cancel();
                 btnPlay.innerText = "▶";
-                trackStatus.innerText = "Paused ⏸ (Tap Play to resume)";
+                btnPlay.classList.add('pulse-play');
+                trackStatus.innerText = "Paused ⏸";
             } else {
-                isSpeaking = true;
+                isPlaying = true;
+                btnPlay.classList.remove('pulse-play');
                 speakCurrentSentence();
             }
         }
 
-        function stopAudio() {
-            isSpeaking = false;
-            synth.cancel();
+        function stopAll() {
+            isPlaying = false;
+            if (synth) synth.cancel();
             btnPlay.innerText = "▶";
+            btnPlay.classList.add('pulse-play');
             trackStatus.innerText = "Stopped ⏹";
         }
 
         btnPlay.addEventListener('click', togglePlay);
-        btnStop.addEventListener('click', stopAudio);
+        btnStop.addEventListener('click', stopAll);
 
         btnPrev.addEventListener('click', () => {
-            unlockIOSAudio();
+            unlockAudioEngine();
             sentenceIndex = Math.max(0, sentenceIndex - 2);
-            if (isSpeaking) {
-                speakCurrentSentence();
+            if (isPlaying) {
+                if (synth) synth.cancel();
+                setTimeout(speakCurrentSentence, 60);
             } else {
-                trackStatus.innerText = `Rewound to sentence ${sentenceIndex + 1}`;
+                trackStatus.innerText = `Rewound to sentence ${sentenceIndex + 1}/${sentences.length}`;
             }
         });
 
         btnNext.addEventListener('click', () => {
-            unlockIOSAudio();
+            unlockAudioEngine();
             sentenceIndex = Math.min(sentences.length - 1, sentenceIndex + 2);
-            if (isSpeaking) {
-                speakCurrentSentence();
+            if (isPlaying) {
+                if (synth) synth.cancel();
+                setTimeout(speakCurrentSentence, 60);
             } else {
-                trackStatus.innerText = `Advanced to sentence ${sentenceIndex + 1}`;
+                trackStatus.innerText = `Advanced to sentence ${sentenceIndex + 1}/${sentences.length}`;
             }
         });
 
+        // SPEED BUTTONS
         const spdBtns = [
             { btn: document.getElementById('spd1'), val: 1.0 },
             { btn: document.getElementById('spd12'), val: 1.25 },
@@ -731,19 +937,21 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
                 playbackRate = item.val;
                 spdBtns.forEach(s => s.btn.classList.remove('active'));
                 item.btn.classList.add('active');
-                if (isSpeaking) {
-                    speakCurrentSentence();
+                if (isPlaying) {
+                    if (synth) synth.cancel();
+                    setTimeout(speakCurrentSentence, 60);
                 }
             });
         });
 
+        // PDF FILE EXTRACTION
         pdfInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            unlockIOSAudio();
-            stopAudio();
-            trackCategory.innerText = "CUSTOM ENGLISH PDF (ENGLISH US VOICE)";
+            stopAll();
+            unlockAudioEngine();
+            trackCategory.innerText = "CUSTOM ENGLISH PDF";
             trackTitle.innerText = file.name;
             trackStatus.innerText = "⏳ Extracting text from PDF...";
 
@@ -764,12 +972,12 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
                             }
 
                             if (!extractedText.trim()) {
-                                throw new Error("PDF does not contain readable text.");
+                                throw new Error("No readable text found in PDF.");
                             }
 
                             readerText.innerText = extractedText.trim();
                             prepareText(extractedText);
-                            trackStatus.innerText = `✅ PDF extracted (${pdf.numPages} pages)! Tap ▶ PLAY to listen in English`;
+                            trackStatus.innerText = `✅ PDF ready (${pdf.numPages} pages)! Tap ▶ PLAY to listen`;
                             btnPlay.classList.add('pulse-play');
                         } catch (err) {
                             alert("PDF extraction error: " + err.message);
@@ -786,7 +994,7 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
                     const text = this.result;
                     readerText.innerText = text.trim();
                     prepareText(text);
-                    trackStatus.innerText = `✅ Text file loaded! Tap ▶ PLAY to listen in English`;
+                    trackStatus.innerText = `✅ Text file loaded! Tap ▶ PLAY to listen`;
                     btnPlay.classList.add('pulse-play');
                 };
                 reader.readAsText(file);
@@ -794,22 +1002,31 @@ Legal Studies Integration: Leveraging legal education to interpret CFPB and FTC 
         });
 
         btnLoadPaste.addEventListener('click', () => {
-            unlockIOSAudio();
             const val = pasteInput.value.trim();
             if (!val) {
                 alert("Please paste some text into the box first!");
                 return;
             }
-            stopAudio();
+            stopAll();
+            unlockAudioEngine();
             trackCategory.innerText = "PASTED ENGLISH TEXT";
             trackTitle.innerText = "Custom Review";
             readerText.innerText = val;
             prepareText(val);
-            trackStatus.innerText = `✅ Text loaded (${sentences.length} sentences)! Reading in English...`;
-            isSpeaking = true;
-            speakCurrentSentence();
+            trackStatus.innerText = `✅ Text loaded (${sentences.length} sentences)! Tap ▶ PLAY`;
+            btnPlay.classList.add('pulse-play');
         });
 
+        // INIT VOICES ON PAGE LOAD AND TIMEOUTS FOR IOS SAFARI
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+            setTimeout(loadVoices, 200);
+            setTimeout(loadVoices, 600);
+            setTimeout(loadVoices, 1200);
+        }
+
+        // Initialize with Module 0
         loadModule(0);
     </script>
 </body>
